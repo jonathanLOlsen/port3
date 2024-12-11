@@ -1,51 +1,53 @@
-import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { login, isAuthenticated } = useAuth();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/profile');
+        }
+    }, [isAuthenticated, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
-        try{
+        try {
             const response = await fetch('https://localhost:7247/api/Users/login', {
                 method: 'POST',
                 headers: {
-                    'Content-Type':'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ email, password }),
             });
-            
 
             if (!response.ok) {
                 const errorMessage = await response.text();
                 throw new Error(errorMessage || 'Login failed');
             }
 
-            const data = await response.json();
-
-            // Store the token and user details in localStorage
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('userId', data.userId);
-            localStorage.setItem('userEmail', data.email);
-            localStorage.setItem('username', data.username);
-
-            navigate('/profile');
-
+            const userData = await response.json();
+            console.log('Login successful, userData:', userData); // Debug log
+            
+            login(userData.token, userData.username);
+            navigate('/login', { replace: true });
         } catch (err) {
             console.error('Login error:', err);
             setError(err.message);
         }
-    }
+    };
 
     return (
-        <div classname="login-container"> 
+        <div className="login-container">
             <h2>Login</h2>
-            <form onSubmit = {handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 <div>
                     <label>Email</label>
                     <input
@@ -56,7 +58,7 @@ const Login = () => {
                     />
                 </div>
                 <div>
-                <label>Password</label>
+                    <label>Password</label>
                     <input
                         type="password"
                         value={password}
@@ -64,9 +66,9 @@ const Login = () => {
                         required
                     />
                 </div>
-                {error && <p classname = "error">{error}</p>}
-                <button type = "submit" >Login</button>
-                
+                {error && <p className="error">{error}</p>}
+                <button type="submit">Login</button>
+
                 {/* Register Button */}
                 <div style={{ marginTop: '20px' }}>
                     <button type="button" onClick={() => navigate('/register')}>
@@ -75,7 +77,11 @@ const Login = () => {
                 </div>
             </form>
         </div>
-    )
-}
+    );
+};
 
 export default Login;
+           
+
+                
+           

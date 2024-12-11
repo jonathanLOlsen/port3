@@ -1,32 +1,33 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 
 const Profile = () => {
+    const { isAuthenticated, username, logout, loading } = useAuth();
+
     const navigate = useNavigate();
 
-    // Retrieve email from localStorage
-    const email = localStorage.getItem('userEmail');
-    const username = localStorage.getItem('username');
-
-    // Redirect to login if email is not available
+    // Redirect to login if not authenticated
     useEffect(() => {
-    
-        if (!email) {
+        if (!isAuthenticated && !loading) {
             navigate('/login');
         }
-    }, [email, navigate]);
+    }, [isAuthenticated, navigate]);
+
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('userEmail');
-        localStorage.removeItem('username');
-        navigate('/login');
+        logout();
+        navigate('/login', { replace: true });
     };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div>
             <h1>Hello, {username}</h1>
+            <button onClick={() => navigate('/bookmarks')}>View Bookmarks</button>
             <button onClick={handleLogout}>Log out</button>
         </div>
     );
