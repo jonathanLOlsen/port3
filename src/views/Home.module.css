@@ -1,0 +1,31 @@
+/* Home.module.css */
+.container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .movieList {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .movieItem {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+  
+  .moviePoster {
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .movieDetails {
+    padding: 10px;
+    text-align: left;
+  }
+  

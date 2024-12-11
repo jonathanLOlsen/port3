@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../config/Config";
 import DynamicLink from "../components/DynamicLink"; // Import DynamicLink
+import styles from "./Home.module.css"; // Import styles
 
 const Home = () => {
   const [topRatedMovies, setTopRatedMovies] = useState([]); // Store top-rated movies
@@ -35,32 +36,22 @@ const Home = () => {
   if (error) return <div style={{ color: "red" }}>{error}</div>;
 
   return (
-    <div style={{ padding: "20px", textAlign: "center" }}>
+    <div className={styles.container}>
       <h1>Top-Rated Movies and TV Shows</h1>
-      <ul style={{ listStyleType: "none", padding: 0 }}>
+      <ul className={styles.movieList}>
         {topRatedMovies.map((movie) => (
-          <li
-            key={movie.tconst}
-            style={{
-              marginBottom: "20px",
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              overflow: "hidden",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
+          <li key={movie.tconst} className={styles.movieItem}>
             {/* Wrap the movie item with DynamicLink */}
             <DynamicLink id={movie.tconst} type="movies">
               {/* Movie Poster */}
               <img
                 src={movie.poster || "https://via.placeholder.com/150x200"}
                 alt={movie.primaryTitle}
-                style={{ width: "150px", height: "200px", objectFit: "cover" }}
+                className={styles.moviePoster}
               />
 
               {/* Movie Details */}
-              <div style={{ padding: "10px", textAlign: "left" }}>
+              <div className={styles.movieDetails}>
                 <h3>{movie.primaryTitle}</h3>
                 <p>
                   <strong>Year:</strong> {movie.startYear || "Unknown"}
