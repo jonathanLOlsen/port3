@@ -1,50 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../config/Config";
-import MovieCard from "../components/MovieCard";
-import { Link } from "react-router-dom";
+import MovieList from "../components/MovieList"; // Import MovieList
 
 const Home = () => {
-  const [movies, setMovies] = useState([]);
+  const [topRatedMovies, setTopRatedMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchTopRatedMovies = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/TitleBasics/limited`, {
-          params: { limit: 10, pageNumber: 1 },
+        const response = await axios.get(`${API_BASE_URL}/TitleBasics/top-rated-with-details`, {
+          params: { limit: 100, minVotes: 100 },
         });
-
-        setMovies(response.data.items);
+        setTopRatedMovies(response.data);
+        setLoading(false);
       } catch (err) {
-        console.error("Failed to fetch movies:", err);
-        setError("Failed to load movies.");
+        console.error("Failed to fetch top-rated movies:", err);
+        setError("Failed to load top-rated movies.");
+        setLoading(false);
       }
     };
 
-    fetchMovies();
+    fetchTopRatedMovies();
   }, []);
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div style={{ color: "red" }}>{error}</div>;
+
   return (
-    <div>
-      <h1>Top 10 Movies and TV Shows</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-        {movies.map((movie) => (
-          <Link
-            to={`/movies/${movie.tConst}`} // Navigate to the movie detail page
-            style={{ textDecoration: "none", color: "inherit" }}
-            key={movie.tConst}
-          >
-            <MovieCard
-              title={movie.primaryTitle}
-              imageUrl={movie.poster}
-              description={movie.plot}
-              averageRating={movie.averageRating}
-            />
-          </Link>
-        ))}
-      </div>
+    <div style={{ padding: "20px", textAlign: "center" }}>
+      <h1>Top-Rated Movies and TV Shows</h1>
+      <MovieList movies={topRatedMovies} />
     </div>
   );
 };

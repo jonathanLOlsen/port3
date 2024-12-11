@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const MovieLink = ({ tConst, children, style }) => {
+const DynamicLink = ({ id, type = "movies", children, style }) => {
   return (
     <Link
-      to={`/movies/${tConst}`} // Navigate to the movie detail page
+      to={`/${type}/${id}`} // Dynamic route based on type and ID
       style={{ textDecoration: "none", color: "inherit", ...style }}
     >
       {children}
@@ -12,4 +12,4 @@ const MovieLink = ({ tConst, children, style }) => {
   );
 };
 
-export default MovieLink;
+export default DynamicLink;

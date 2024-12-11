@@ -1,33 +1,23 @@
 import React from "react";
+import DynamicLink from "./DynamicLink"; // Import DynamicLink
+import styles from "./MovieCard.module.css"; // Scoped styles for MovieCard
 
-const MovieCard = ({ title, imageUrl, description, averageRating }) => {
+const MovieCard = ({ movie }) => {
   return (
-    <div
-      style={{
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        overflow: "hidden",
-        width: "200px",
-        textAlign: "center",
-      }}
-    >
-      <img
-        src={imageUrl || "https://via.placeholder.com/150x200"}
-        alt={title}
-        style={{
-          width: "100%",
-          height: "300px",
-          objectFit: "cover",
-        }}
-      />
-      <h3 style={{ fontSize: "16px", margin: "10px 0" }}>{title}</h3>
-      <p style={{ fontSize: "14px", color: "#555" }}>{description}</p>
-      {averageRating && (
-        <p>
-          <strong>Rating:</strong> {averageRating}/10
-        </p>
-      )}
-    </div>
+    <DynamicLink id={movie.tconst} type="movies">
+      <div className={styles.movieCard}>
+        <img
+          src={movie.poster || "https://via.placeholder.com/150x200"}
+          alt={movie.primaryTitle}
+          className={styles.moviePoster}
+        />
+        <div className={styles.movieDetails}>
+          <h3>{movie.primaryTitle}</h3>
+          <p><strong>Year:</strong> {movie.startYear || "Unknown"}</p>
+          <p><strong>Rating:</strong> {movie.averageRating} ({movie.numVotes} votes)</p>
+        </div>
+      </div>
+    </DynamicLink>
   );
 };
 

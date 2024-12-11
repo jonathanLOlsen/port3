@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL, TMDB_API_KEY, TMDB_BASE_URL } from "../config/Config";
+import DynamicLink from "../components/DynamicLink"; // Import DynamicLink
 
 const Movies = () => {
   const [movies, setMovies] = useState([]); // Store the list of movies
@@ -86,23 +87,26 @@ const Movies = () => {
               alignItems: "center",
             }}
           >
-            {/* Movie Poster */}
-            <img
-              src={movie.poster || "https://via.placeholder.com/150x200"}
-              alt={movie.primaryTitle}
-              style={{ width: "150px", height: "200px", objectFit: "cover" }}
-            />
+            {/* Wrap the movie item with DynamicLink */}
+            <DynamicLink id={movie.tConst} type="movies">
+              {/* Movie Poster */}
+              <img
+                src={movie.poster || "https://via.placeholder.com/150x200"}
+                alt={movie.primaryTitle}
+                style={{ width: "150px", height: "200px", objectFit: "cover" }}
+              />
 
-            {/* Movie Details */}
-            <div style={{ padding: "10px", textAlign: "left" }}>
-              <h3>{movie.primaryTitle}</h3>
-              <p>
-                <strong>Year:</strong> {movie.startYear || "Unknown"}
-              </p>
-              <p>
-                <strong>Plot:</strong> {movie.plot || "No description available."}
-              </p>
-            </div>
+              {/* Movie Details */}
+              <div style={{ padding: "10px", textAlign: "left" }}>
+                <h3>{movie.primaryTitle}</h3>
+                <p>
+                  <strong>Year:</strong> {movie.startYear || "Unknown"}
+                </p>
+                <p>
+                  <strong>Plot:</strong> {movie.plot || "No description available."}
+                </p>
+              </div>
+            </DynamicLink>
           </li>
         ))}
       </ul>
