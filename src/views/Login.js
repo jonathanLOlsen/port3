@@ -12,7 +12,7 @@ const Login = () => {
         setError('');
 
         try{
-            const response = await fetch('http://localhost:5255/api/Users/login', {
+            const response = await fetch('https://localhost:7247/api/Users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type':'application/json'
@@ -26,15 +26,18 @@ const Login = () => {
                 throw new Error(errorMessage || 'Login failed');
             }
 
-            const data = await response.json();
-            alert(data.Message); // Login successful
-            navigate('/dashboard'); // Redirect to dashboard on successful login
+            const userData = await response.json();
+
+            localStorage.setItem('userEmail', userData.email);
+            localStorage.setItem('username', userData.username);
+
+            navigate('/profile');
 
         } catch (err) {
             console.error('Login error:', err);
             setError(err.message);
         }
-    };
+    }
 
     return (
         <div classname="login-container"> 
@@ -60,6 +63,13 @@ const Login = () => {
                 </div>
                 {error && <p classname = "error">{error}</p>}
                 <button type = "submit" >Login</button>
+                
+                {/* Register Button */}
+                <div style={{ marginTop: '20px' }}>
+                    <button type="button" onClick={() => navigate('/register')}>
+                        Don't have an account? Register
+                    </button>
+                </div>
             </form>
         </div>
     )
