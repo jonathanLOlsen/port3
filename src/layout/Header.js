@@ -10,9 +10,13 @@ const Header = () => {
         <Link to="/about">About</Link>
         <Link to="/contact">Contact</Link>
         <Link to="/movies">Movies</Link> {/* Add Movies link */}
+
+        <Link to="/people">People</Link>
+
         <Link to="/profile">Profile</Link>
         <Link to="/login">Login</Link>
         <Link to="/register">Register</Link>
+
       </nav>
     </header>
   );
