@@ -1,26 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../config/Config";
-import DynamicLink from "../components/DynamicLink"; // Import DynamicLink
-import styles from "./Home.module.css"; // Import styles
+import MovieList from "../components/MovieList"; // Import MovieList
 
 const Home = () => {
-  const [topRatedMovies, setTopRatedMovies] = useState([]); // Store top-rated movies
-  const [loading, setLoading] = useState(true); // Track loading state
-  const [error, setError] = useState(null); // Track errors
+  const [topRatedMovies, setTopRatedMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchTopRatedMovies = async () => {
       try {
-        // Fetch top-rated movies from the new endpoint
         const response = await axios.get(`${API_BASE_URL}/TitleBasics/top-rated-with-details`, {
-          params: {
-            limit: 100, // Number of movies to fetch
-            minVotes: 100, // Minimum number of votes
-          },
+          params: { limit: 100, minVotes: 100 },
         });
-
-        setTopRatedMovies(response.data); // Store the result
+        setTopRatedMovies(response.data);
         setLoading(false);
       } catch (err) {
         console.error("Failed to fetch top-rated movies:", err);
@@ -36,37 +30,9 @@ const Home = () => {
   if (error) return <div style={{ color: "red" }}>{error}</div>;
 
   return (
-    <div className={styles.container}>
+    <div style={{ padding: "20px", textAlign: "center" }}>
       <h1>Top-Rated Movies and TV Shows</h1>
-      <ul className={styles.movieList}>
-        {topRatedMovies.map((movie) => (
-          <li key={movie.tconst} className={styles.movieItem}>
-            {/* Wrap the movie item with DynamicLink */}
-            <DynamicLink id={movie.tconst} type="movies">
-              {/* Movie Poster */}
-              <img
-                src={movie.poster || "https://via.placeholder.com/150x200"}
-                alt={movie.primaryTitle}
-                className={styles.moviePoster}
-              />
-
-              {/* Movie Details */}
-              <div className={styles.movieDetails}>
-                <h3>{movie.primaryTitle}</h3>
-                <p>
-                  <strong>Year:</strong> {movie.startYear || "Unknown"}
-                </p>
-                <p>
-                  <strong>Plot:</strong> {movie.plot || "No description available."}
-                </p>
-                <p>
-                  <strong>Rating:</strong> {movie.averageRating} ({movie.numVotes} votes)
-                </p>
-              </div>
-            </DynamicLink>
-          </li>
-        ))}
-      </ul>
+      <MovieList movies={topRatedMovies} />
     </div>
   );
 };
