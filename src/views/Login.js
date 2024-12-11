@@ -26,10 +26,13 @@ const Login = () => {
                 throw new Error(errorMessage || 'Login failed');
             }
 
-            const userData = await response.json();
+            const data = await response.json();
 
-            localStorage.setItem('userEmail', userData.email);
-            localStorage.setItem('username', userData.username);
+            // Store the token and user details in localStorage
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('userId', data.userId);
+            localStorage.setItem('userEmail', data.email);
+            localStorage.setItem('username', data.username);
 
             navigate('/profile');
 
