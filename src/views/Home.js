@@ -11,10 +11,9 @@ const Home = () => {
   useEffect(() => {
     const fetchTopRatedMovies = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/TitleBasics/top-rated-with-details`, {
-          params: { limit: 100, minVotes: 100 },
-        });
-        setTopRatedMovies(response.data);
+        // API call to fetch top-rated movies
+        const response = await axios.get(`${API_BASE_URL}/TitleBasics/top-rated`);
+        setTopRatedMovies(response.data); // Update state with the response data
         setLoading(false);
       } catch (err) {
         console.error("Failed to fetch top-rated movies:", err);
@@ -32,7 +31,7 @@ const Home = () => {
   return (
     <div style={{ padding: "20px", textAlign: "center" }}>
       <h1>Top-Rated Movies and TV Shows</h1>
-      <MovieList movies={topRatedMovies} />
+      <MovieList movies={topRatedMovies} /> {/* Pass movies to the MovieList component */}
     </div>
   );
 };
