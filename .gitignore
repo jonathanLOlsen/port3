@@ -12,12 +12,55 @@
 /build
 
 # misc
-.DS_Store
+.DS_Store                # macOS system file
+Thumbs.db                # Windows system file
+desktop.ini              # Windows desktop configuration file
+.idea/                   # JetBrains IDE files
+.vscode/                 # VS Code workspace files
+*.swp                    # Swap files (e.g., Vim)
+*.swo
+
+# environment variables
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
+# logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# macOS specific
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# macOS resource fork files
+._*
+
+# Windows specific
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Miscellaneous
+*.log                    # Log files
+*.bak                    # Backup files
+*.tmp                    # Temporary files
+*.lock                   # Lock files
+*.cache                  # Cache files
+
+# Compiled source files
+*.out
+*.obj
+*.exe
+*.dll
+
+# IDE and Editor-specific
+.idea/
+.vscode/
+*.iml                   # IntelliJ IDEA files
+*.sln                   # Visual Studio Solution files
