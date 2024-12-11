@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../config/Config";
 import MovieCard from "../components/MovieCard";
-import { Link } from "react-router-dom";
+import DynamicLink from "../components/DynamicLink"; // Updated import
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
@@ -31,9 +31,9 @@ const Home = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
         {movies.map((movie) => (
-          <Link
-            to={`/movies/${movie.tConst}`} // Navigate to the movie detail page
-            style={{ textDecoration: "none", color: "inherit" }}
+          <DynamicLink
+            id={movie.tConst} // Pass the unique identifier for each movie
+            type="movies" // Specify the type
             key={movie.tConst}
           >
             <MovieCard
@@ -42,7 +42,7 @@ const Home = () => {
               description={movie.plot}
               averageRating={movie.averageRating}
             />
-          </Link>
+          </DynamicLink>
         ))}
       </div>
     </div>
