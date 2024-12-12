@@ -12,14 +12,16 @@ const Home = () => {
 
   // Hardcoded list of title types
   const titleTypes = [
-    "movie",
-    "tvEpisode",
-    "tvSeries",
-    "tvMiniSeries",
-    "tvSpecial",
-    "short",
-    "video",
-    "documentary",
+      "video",
+      "tvSpecial",
+      "tvSeries",
+      "tvShort",
+      "movie",
+      "tvMovie",
+      "short",
+      "tvMiniSeries",
+      "videoGame",
+      "tvEpisode",
   ];
 
   useEffect(() => {
@@ -51,7 +53,7 @@ const Home = () => {
   return (
     <div style={{ padding: "20px", textAlign: "center" }}>
       <h1>Top-Rated {titleType}</h1>
-      
+
       {/* Use the generic Dropdown component */}
       <Dropdown
         options={titleTypes} // Pass the list of title types
