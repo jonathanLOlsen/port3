@@ -114,22 +114,32 @@ const MovieDetail = () => {
       <h2>Similar Movies</h2>
       {similarMovies.length > 0 ? (
         <Carousel
-        items={similarMovies} // Correct data array
+        items={similarMovies || []} // Ensure items is never undefined
         visibleCount={5}
-        renderItem={(movie) => (
-          <DynamicLink id={movie.similar_tconst } type="movies"> {/* Pass the correct tconst */}
-            <div>
-              <img
-                src={movie.poster}
-                alt={movie.primaryTitle}
-                style={{ width: "150px", height: "200px" }}
-              />
-              <p>{movie.primaryTitle}</p>
-              <p style={{ fontSize: "14px" }}>{movie.plot}</p>
-            </div>
-          </DynamicLink>
-        )}
+        renderItem={(movie) => {
+          // Truncate the plot to a maximum of 150 characters
+          const truncatedPlot = movie.plot
+            ? movie.plot.length > 150
+              ? movie.plot.substring(0, 150) + "..."
+              : movie.plot
+            : "No Plot Available";
+      
+          return (
+            <DynamicLink id={movie.similar_tconst || "undefined"} type="movies">
+              <div>
+                <img
+                  src={movie.poster || "https://via.placeholder.com/150x200"}
+                  alt={movie.primarytitle || "No Title"}
+                  style={{ width: "150px", height: "200px" }}
+                />
+                <p>{movie.primarytitle || "Unknown Title"}</p>
+                <p style={{ fontSize: "14px" }}>{truncatedPlot}</p> {/* Show truncated plot */}
+              </div>
+            </DynamicLink>
+          );
+        }}
       />
+      
       ) : (
         <div>No similar movies found.</div>
       )}
