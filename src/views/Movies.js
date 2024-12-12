@@ -1,30 +1,36 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../config/Config";
-import DynamicLink from "../components/DynamicLink"; // Import DynamicLink
+import DynamicLink from "../components/DynamicLink";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const Movies = () => {
-  const [moviesByGenre, setMoviesByGenre] = useState({}); // Store movies grouped by genres
-  const [loading, setLoading] = useState(true); // Track loading state
-  const [error, setError] = useState(null); // Track errors
+  const [moviesByGenre, setMoviesByGenre] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchMoviesByGenre = async () => {
       try {
-        const genres = ["Action", "Comedy", "Drama", "Horror", "Sci-Fi"]; // Specify genres to fetch
-  
+        const genres = ["Action", "Comedy", "Drama", "Horror", "Sci-Fi"];
+
         const moviesByGenre = await Promise.all(
           genres.map(async (genre) => {
             const response = await axios.get(`${API_BASE_URL}/TitleBasics/movie-rankings-by-genre`, {
-              params: { genre_param: genre }, // Updated to match the API parameter name
+              params: { genre_param: genre },
             });
-  
+
+            if (!response.data || !Array.isArray(response.data)) {
+              throw new Error(`Invalid response for genre: ${genre}`);
+            }
+
             const movies = response.data.slice(0, 5);
-  
+
             return [genre, movies];
           })
         );
-  
+
         setMoviesByGenre(Object.fromEntries(moviesByGenre));
         setLoading(false);
       } catch (err) {
@@ -33,50 +39,54 @@ const Movies = () => {
         setLoading(false);
       }
     };
-  
+
     fetchMoviesByGenre();
   }, []);
-  
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  if (loading) return <div className="text-center">Loading...</div>;
+  if (error) return <div className="text-danger text-center">{error}</div>;
 
   return (
-    <div style={{ padding: "20px", textAlign: "center" }}>
-      <h1>Movies by Genre</h1>
+    <div className="container my-5">
+      <h1 className="text-center mb-5 display-4">Top 5 Movies By Genre</h1>
       {Object.entries(moviesByGenre).map(([genre, movies]) => (
-        <div key={genre} style={{ marginBottom: "40px" }}>
-          <h2>{genre}</h2>
-          <ul style={{ listStyleType: "none", padding: 0, display: "flex", gap: "10px", overflowX: "auto" }}>
+        <div key={genre} className="mb-5">
+          <h2 className="text-center mb-3">{genre}</h2>
+          <div
+            className="d-flex justify-content-center overflow-auto py-3"
+            style={{ gap: "20px" }}
+          >
             {movies.map((movie) => (
-              <li
+              <div
                 key={movie.tConst}
-                style={{
-                  minWidth: "150px",
-                  border: "1px solid #ddd",
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                }}
+                className="card flex-shrink-0 shadow-lg"
+                style={{ width: "200px", borderRadius: "15px" }}
               >
                 <DynamicLink id={movie.tConst} type="movies">
                   <img
-                    src={movie.poster || "http://via.placeholder.com/150x200"}
+                    src={movie.poster || "http://via.placeholder.com/200x300"}
+                    className="card-img-top"
                     alt={movie.primaryTitle}
-                    style={{ width: "150px", height: "200px", objectFit: "cover" }}
+                    style={{
+                      height: "300px",
+                      objectFit: "cover",
+                      borderTopLeftRadius: "15px",
+                      borderTopRightRadius: "15px",
+                    }}
                   />
-                  <div style={{ padding: "10px", textAlign: "left" }}>
-                    <h3 style={{ fontSize: "16px", margin: "5px 0" }}>{movie.primaryTitle}</h3>
-                    <p style={{ fontSize: "14px" }}>
-                      <strong>Year:</strong> {movie.startYear || "Unknown"}
+                  <div className="card-body text-center">
+                    <h5 className="card-title">{movie.primaryTitle}</h5>
+                    <p className="card-text mb-1">
+                      <strong>Rating:</strong> {movie.averageRating || "N/A"}
                     </p>
-                    <p style={{ fontSize: "14px" }}>
-                      <strong>Plot:</strong> {movie.plot || "No description available."}
+                    <p className="card-text">
+                      <strong>Genre:</strong> {movie.genre || "Unknown"}
                     </p>
                   </div>
                 </DynamicLink>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       ))}
     </div>
