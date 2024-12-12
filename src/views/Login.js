@@ -18,7 +18,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-
+    
         try {
             const response = await fetch('http://localhost:7247/api/Users/login', {
                 method: 'POST',
@@ -27,22 +27,24 @@ const Login = () => {
                 },
                 body: JSON.stringify({ email, password }),
             });
-
+    
             if (!response.ok) {
                 const errorMessage = await response.text();
                 throw new Error(errorMessage || 'Login failed');
             }
-
+    
             const userData = await response.json();
             console.log('Login successful, userData:', userData); // Debug log
-            
-            login(userData.token, userData.username);
-            navigate('/login', { replace: true });
+    
+            // Call login with token, username, userId, and email
+            login(userData.token, userData.username, userData.userId, userData.email);
+            navigate('/profile', { replace: true });
         } catch (err) {
             console.error('Login error:', err);
             setError(err.message);
         }
     };
+    
 
     return (
         <div className="login-container">
