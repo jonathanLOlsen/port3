@@ -1,62 +1,109 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../AuthContext';
-
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../AuthContext";
+import DynamicLink from "../components/DynamicLink"; // Import DynamicLink
 
 const Bookmarks = () => {
-    const { userId } = useAuth(); // Retrieve userId from AuthContext
-    const [bookmarks, setBookmarks] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+  const [bookmarks, setBookmarks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { userId, logout } = useAuth();
 
-    useEffect(() => {
-        const fetchBookmarks = async () => {
-            try {
-                if (!userId) {
-                    throw new Error('User ID is missing');
-                }
+  // Fetch bookmarks from the backend
+  useEffect(() => {
+    const fetchBookmarks = async () => {
+      try {
+        const token = localStorage.getItem('token');
 
-                const response = await fetch(`http://localhost:7247/api/UserBookmarks/user/${userId}/bookmarksWithTitles`);
+        const response = await fetch(`http://localhost:7247/api/UserBookmarks/user/${userId}/bookmarksWithTitles`, {
+            headers: {
+                'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+                'Content-Type': 'application/json',
+            },
+        });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch bookmarks');
-                }
+        if (!response.ok) {
+          throw new Error("Failed to load bookmarks");
+        }
 
-                const data = await response.json();
-                setBookmarks(data);
-            } catch (err) {
-                setError(err.message);
-            } finally{
-                setLoading(false);
-            }
-        };
+        if (response.status === 401) {
+            console.error("Unauthorized access. Please log in again.");
+            setError("Your session has expired. Please log in again.");
+            logout(); // Call logout function to clear token and redirect to login
+        }
 
-        fetchBookmarks();
-    }, [userId]);
+        const bookmarksData = await response.json();
+        setBookmarks(bookmarksData);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching bookmarks:", err);
+        setError(err.message);
+        setLoading(false);
+      }
+    };
 
-    if (loading) {
-        return <div>Loading bookmarks...</div>;
+    if (userId) {
+      fetchBookmarks();
     }
+  }, [userId]);
 
-    if (error) {
-        return <div>Error: {error}</div>;
+  // Handle removing a bookmark
+  const handleRemove = async (bookmarkId) => {
+    try {
+        const token = localStorage.getItem('token'); // Get the token from localStorage
+
+        const response = await fetch(`http://localhost:7247/api/UserBookmarks/${bookmarkId}`, {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+                'Content-Type': 'application/json',
+            },
+        });
+
+      if (!response.ok) {
+        throw new Error("Failed to remove bookmark");
+      }
+
+      // Update the bookmarks state after successful deletion
+      setBookmarks(bookmarks.filter((bookmark) => bookmark.userBookmarksId !== bookmarkId));
+    } catch (err) {
+      console.error("Error removing bookmark:", err);
     }
+  };
 
-    return (
-        <div>
-            <h2>Your Bookmarks</h2>
-            {bookmarks.length === 0 ? (
-                <p>No bookmarks found.</p>
-            ) : (
-                <ul>
-                    {bookmarks.map((bookmark) => (
-                        <li key={bookmark.userBookmarkingsId}>
-                            <strong>{bookmark.primarytitle}</strong> ({bookmark.tconst}) - {bookmark.note}
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-    );
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div style={{ color: "red" }}>{error}</div>;
+
+  return (
+    <div>
+      <h2>Your Bookmarks</h2>
+      <div className="bookmarks-list">
+        {bookmarks.length > 0 ? (
+          bookmarks.map((bookmark) => (
+            <div key={bookmark.userBookmarksId} className="bookmark-card">
+                <img
+                    src={bookmark.poster || "https://placehold.co/150x200"}
+                    alt={bookmark.primaryTitle}
+                    className="poster"
+                />
+              <div className="details">
+                <h3>
+                  <DynamicLink id={bookmark.tconst} type="movies">
+                    {bookmark.primarytitle || "Unknown Title"}
+                  </DynamicLink>
+                </h3>
+                <p><strong>Note:</strong> {bookmark.note || "No note provided"}</p>
+                <button onClick={() => handleRemove(bookmark.userBookmarksId)} className="remove-button">
+                  Remove Bookmark
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>No bookmarks found.</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Bookmarks;

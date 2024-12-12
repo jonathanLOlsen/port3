@@ -50,7 +50,7 @@ function App() {
                         <Route path="/people/:nConst" element={<PersonDetail />} />
                         <Route path="/movies" element={<Movies />} />
                         <Route path="/movies/:id" element={<MovieDetail />} />
-
+                        
                         {/* Protected Routes */}
                         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                         <Route path="/bookmarks" element={<ProtectedRoute><Bookmarks /></ProtectedRoute>} />
