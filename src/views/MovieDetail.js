@@ -140,9 +140,13 @@ const MovieDetail = () => {
         }}
       />
       
+      
       ) : (
         <div>No similar movies found.</div>
       )}
+
+      {/* Back Button */}
+      <button onClick={() => window.history.back()}>Go Back</button>
     </div>
   );
 };
