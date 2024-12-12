@@ -113,7 +113,23 @@ const MovieDetail = () => {
 
       <h2>Similar Movies</h2>
       {similarMovies.length > 0 ? (
-        <Carousel items={similarMovies} visibleCount={5} />
+        <Carousel
+        items={similarMovies} // Correct data array
+        visibleCount={5}
+        renderItem={(movie) => (
+          <DynamicLink id={movie.similar_tconst } type="movies"> {/* Pass the correct tconst */}
+            <div>
+              <img
+                src={movie.poster}
+                alt={movie.primaryTitle}
+                style={{ width: "150px", height: "200px" }}
+              />
+              <p>{movie.primaryTitle}</p>
+              <p style={{ fontSize: "14px" }}>{movie.plot}</p>
+            </div>
+          </DynamicLink>
+        )}
+      />
       ) : (
         <div>No similar movies found.</div>
       )}
