@@ -1,33 +1,36 @@
+/* Header.css */
+
 .header {
-  background-color: #333;
+  background-color: #f8f9fa; /* Light gray background for header */
+  border-bottom: 1px solid #ddd; /* Subtle border */
   padding: 10px 20px;
-  color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .navbar {
-  color: #333;
   display: flex;
-  align-items: center;
-  justify-content: space-between; /* Push nav-links to the left and profile-section to the right */
-  max-width: 1200px;
-  margin: 0 auto;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .nav-links {
   display: flex;
-  gap: 20px;
+  align-items: center;
+  gap: 15px;
 }
 
 .nav-link {
-  color: white;
   text-decoration: none;
-  padding: 10px;
-  transition: background-color 0.3s;
+  color: #007bff;
+  font-weight: 500;
+  transition: color 0.2s ease-in-out;
 }
 
 .nav-link:hover {
-  background-color: #999999d4;
-  border-radius: 5px;
+  color: #0056b3; /* Darker blue on hover */
 }
 
 .profile-section {
@@ -36,13 +39,13 @@
 
 .nav-button {
   background-color: #007bff;
-  color: white;
-  padding: 10px;
+  color: #fff;
+  padding: 5px 10px;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
+  font-size: 0.9rem;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .nav-button:hover {
@@ -51,26 +54,23 @@
 
 .dropdown-content {
   position: absolute;
-  top: 100%; /* Dropdown appears below the button */
-  right: 0; /* Align dropdown to the right edge */
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
-  z-index: 1000;
-  overflow: hidden;
+  top: 40px;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 100;
 }
 
 .dropdown-item {
-  padding: 10px;
   display: block;
-  color: #333;
+  padding: 10px 20px;
   text-decoration: none;
-  transition: background-color 0.3s;
+  color: #333;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .dropdown-item:hover {
-  background-color: #ddd;
+  background-color: #f1f1f1;
 }
-
-
