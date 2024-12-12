@@ -13,7 +13,7 @@ const Bookmarks = () => {
 
     const fetchBookmarks = async () => {
         try {
-            const response = await axios.get('https://localhost:7247/api/UserBookmarks', {
+            const response = await axios.get('http://localhost:7247/api/UserBookmarks', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -27,7 +27,7 @@ const Bookmarks = () => {
 
     const handleDelete = async (bookmarkId) => {
         try {
-            await axios.delete(`https://localhost:7247/api/UserBookmarks/${bookmarkId}`, {
+            await axios.delete(`http://localhost:7247/api/UserBookmarks/${bookmarkId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
