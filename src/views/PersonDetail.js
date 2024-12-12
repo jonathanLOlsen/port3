@@ -2,22 +2,22 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_BASE_URL, TMDB_API_KEY, TMDB_BASE_URL } from "../config/Config";
+import DynamicLink from "../components/DynamicLink";
+import "./PersonDetail.css"; // Import the CSS file
 
 const PersonDetail = () => {
-    const { nConst } = useParams(); // Get the nConst from the URL
+    const { nConst } = useParams();
     const [person, setPerson] = useState(null);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true); // Loading state
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchPersonDetails = async () => {
-            setLoading(true); // Set loading to true at the start of the fetch
+            setLoading(true);
             try {
-                // Fetch person details from your API
                 const response = await axios.get(`${API_BASE_URL}/NameBasics/details/${nConst}`);
                 const personData = response.data;
 
-                // Fetch TMDB image
                 const profileImage = await fetchProfileImage(personData.primaryName);
 
                 setPerson({
@@ -28,7 +28,7 @@ const PersonDetail = () => {
                 console.error("Failed to fetch person details:", err);
                 setError("Failed to load person details.");
             } finally {
-                setLoading(false); // Stop loading after the fetch
+                setLoading(false);
             }
         };
 
@@ -49,29 +49,59 @@ const PersonDetail = () => {
                 console.error(`Failed to fetch TMDB profile for ${name}:`, error);
             }
 
-            return "https://via.placeholder.com/150x200"; // Default placeholder image
+            return "https://via.placeholder.com/150x200";
         };
 
         fetchPersonDetails();
     }, [nConst]);
 
-    if (loading) return <p>Loading...</p>; // Display a loading message
-    if (error) return <p style={{ color: "red" }}>{error}</p>;
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p className="error-text">{error}</p>;
 
     return (
-        <div style={{ padding: "20px" }}>
-            <h1>{person.primaryName}</h1>
-            <img
-                src={person.photo}
-                alt={person.primaryName}
-                style={{ borderRadius: "8px", width: "200px", height: "300px" }}
-            />
-            <p><strong>Rating:</strong> {person.aRating || "N/A"}</p>
-            <p><strong>Birth Year:</strong> {person.birthYear || "Unknown"}</p>
-            <p><strong>Known For:</strong> {person.knownForTitles || "Not available"}</p>
-            <p><strong>Primary Profession:</strong> {person.primaryProfession || "Not available"}</p>
+        <div className="person-detail-container">
+            {/* Main Content */}
+            <div className="person-main-content">
+                {/* Person Column */}
+                <div className="person-column">
+                    <h1 className="person-name">{person.primaryName}</h1>
+                    <img
+                        src={person.photo}
+                        alt={person.primaryName}
+                        className="person-image"
+                    />
+                </div>
+    
+                {/* Center Information */}
+                <div className="person-info">
+                    <div className="rating-birth-container">
+                        <p><strong>Rating:</strong> {person.aRating || "N/A"}</p>
+                        <p><strong>Birth Year:</strong> {person.birthYear || "Unknown"}</p>
+                    </div>
+                    <p><strong>Primary Profession:</strong> {person.primaryProfession || "Not available"}</p>
+                </div>
+    
+                {/* Poster Column */}
+                <div className="poster-column">
+                    <p className="known-for-title">Known For Title:</p>
+                    <DynamicLink id={person.tConst} type="movies">
+                        <img
+                            src={person.poster}
+                            alt={`${person.primaryName} Poster`}
+                            className="poster-image"
+                        />
+                    </DynamicLink>
+                </div>
+            </div>
+    
+            {/* Back Button */}
+            <button onClick={() => window.history.back()}>Go Back</button>
         </div>
     );
+    
+    
+    
+    
 };
 
 export default PersonDetail;
