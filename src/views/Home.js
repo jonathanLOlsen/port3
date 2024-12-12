@@ -41,13 +41,13 @@ const Home = () => {
         const response1 = await axios.get(`${API_BASE_URL}/TitleBasics/top-rated`, {
           params: { titleType: titleType1 },
         });
-        setTopRatedMovies1(response1.data);
+        setTopRatedMovies1(response1.data || []); // Fallback to empty array if no data
 
         // Fetch movies for the second carousel
         const response2 = await axios.get(`${API_BASE_URL}/TitleBasics/top-rated`, {
           params: { titleType: titleType2 },
         });
-        setTopRatedMovies2(response2.data);
+        setTopRatedMovies2(response2.data || []); // Fallback to empty array if no data
 
         setLoading(false);
       } catch (err) {
@@ -77,7 +77,21 @@ const Home = () => {
         selectedValue={titleType1} // Pass the selected value
         onChange={setTitleType1} // Update the state for the first carousel
       />
-      <Carousel movies={topRatedMovies1} onMovieClick={handleMovieClick} />
+      <Carousel
+        items={topRatedMovies1} // Updated to `items`
+        visibleCount={5} // Number of items visible
+        renderItem={(movie) => (
+          <div onClick={() => handleMovieClick(movie.tconst)} style={{ cursor: "pointer" }}>
+            <img
+              src={movie.poster}
+              alt={movie.primaryTitle}
+              style={{ width: "150px", height: "200px" }}
+            />
+            <p>{movie.primaryTitle}</p>
+            <p>{movie.startYear}</p>
+          </div>
+        )}
+      />
 
       {/* Second Carousel */}
       <h1>Top-Rated {titleType2}</h1>
@@ -86,7 +100,21 @@ const Home = () => {
         selectedValue={titleType2} // Pass the selected value
         onChange={setTitleType2} // Update the state for the second carousel
       />
-      <Carousel movies={topRatedMovies2} onMovieClick={handleMovieClick} />
+      <Carousel
+        items={topRatedMovies2} // Updated to `items`
+        visibleCount={5} // Number of items visible
+        renderItem={(movie) => (
+          <div onClick={() => handleMovieClick(movie.tconst)} style={{ cursor: "pointer" }}>
+            <img
+              src={movie.poster}
+              alt={movie.primaryTitle}
+              style={{ width: "150px", height: "200px" }}
+            />
+            <p>{movie.primaryTitle}</p>
+            <p>{movie.startYear}</p>
+          </div>
+        )}
+      />
     </div>
   );
 };
