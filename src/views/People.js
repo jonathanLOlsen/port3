@@ -73,7 +73,7 @@ const People = () => {
 
     // Handle changes in the search bar
     const handleSearchChange = (e) => {
-        setSearchTerm(e.target.value); // Update search term state
+        setSearchTerm(e.target.value); // Update search term states
     };
 
     // Handle search button click

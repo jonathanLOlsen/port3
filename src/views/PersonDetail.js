@@ -66,6 +66,11 @@ const PersonDetail = () => {
                 alt={person.primaryName}
                 style={{ borderRadius: "8px", width: "200px", height: "300px" }}
             />
+            <img
+                        src={person.poster}
+                        alt={`${person.primaryName} Poster`}
+                        style={{ borderRadius: "8px", width: "200px", height: "300px" }}
+            />
             <p><strong>Rating:</strong> {person.aRating || "N/A"}</p>
             <p><strong>Birth Year:</strong> {person.birthYear || "Unknown"}</p>
             <p><strong>Known For:</strong> {person.knownForTitles || "Not available"}</p>
