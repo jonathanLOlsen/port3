@@ -1,0 +1,15 @@
+/* MainLayout.css or Footer.css */
+
+.footer {
+    background-color: #f8f9fa; /* Light gray background */
+    text-align: center;
+    padding: 10px 20px;
+    border-top: 1px solid #ddd; /* Subtle border on top */
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .footer p {
+    margin: 0;
+  }
+  

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import for navigation
 import axios from "axios";
 import { API_BASE_URL } from "../config/Config";
 import Dropdown from "../components/Dropdown"; // Import the generic Dropdown component
-import Carousel from "../components/Carousel"; // Import the Carousel component
+import Carousel from "../components/Carousel"; // Import the updated Carousel component
 
 const Home = () => {
+  const navigate = useNavigate(); // Hook for navigation
+
   // State for the first carousel
   const [topRatedMovies1, setTopRatedMovies1] = useState([]);
   const [titleType1, setTitleType1] = useState("movie"); // Default value for the first carousel
@@ -57,6 +60,11 @@ const Home = () => {
     fetchMovies();
   }, [titleType1, titleType2]); // Re-fetch when either titleType changes
 
+  // Function to handle movie click
+  const handleMovieClick = (tConst) => {
+    navigate(`/movies/${tConst}`); // Navigate to the MovieDetail view
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div style={{ color: "red" }}>{error}</div>;
 
@@ -69,7 +77,7 @@ const Home = () => {
         selectedValue={titleType1} // Pass the selected value
         onChange={setTitleType1} // Update the state for the first carousel
       />
-      <Carousel movies={topRatedMovies1} />
+      <Carousel movies={topRatedMovies1} onMovieClick={handleMovieClick} />
 
       {/* Second Carousel */}
       <h1>Top-Rated {titleType2}</h1>
@@ -78,7 +86,7 @@ const Home = () => {
         selectedValue={titleType2} // Pass the selected value
         onChange={setTitleType2} // Update the state for the second carousel
       />
-      <Carousel movies={topRatedMovies2} />
+      <Carousel movies={topRatedMovies2} onMovieClick={handleMovieClick} />
     </div>
   );
 };
