@@ -28,38 +28,110 @@ const fetchProfileImage = async (name) => {
 
 const People = () => {
     const [people, setPeople] = useState([]);
+    const [searchTerm, setSearchTerm] = useState(""); // State to track the search term
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchPeople = async () => {
-            try {
-                // Fetch data from your API
-                const response = await axios.get(`${API_BASE_URL}/NameBasics/topNames100`);
+    // Function to fetch people based on search term
+    const fetchPeople = async (search = "") => {
+        setIsLoading(true);
+        setError(null);
 
-                // Enhance data with TMDB images
-                const updatedPeople = await Promise.all(
-                    response.data.map(async (person) => ({
-                        ...person,
-                        photo: await fetchProfileImage(person.primaryName), // Fetch photo
-                    }))
-                );
+        try {
+            const response = await axios.get(`${API_BASE_URL}/NameBasics/topNames100Sub`, {
+                params: {
+                    substring_filter: search, // Send search term or empty string
+                },
+            });
 
-                setPeople(updatedPeople);
-            } catch (err) {
-                console.error("Failed to fetch people:", err);
-                setError("Failed to load people.");
+            console.log("API Response:", response.data);
+
+            if (!response.data || !Array.isArray(response.data)) {
+                throw new Error("Invalid API response");
             }
-        };
 
-        fetchPeople();
+            const updatedPeople = await Promise.all(
+                response.data.map(async (person) => ({
+                    ...person,
+                    photo: await fetchProfileImage(person.primaryName),
+                }))
+            );
+
+            setPeople(updatedPeople);
+        } catch (err) {
+            console.error("Failed to fetch people:", err);
+            setError("Failed to load people.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Fetch top actors on initial load
+    useEffect(() => {
+        fetchPeople(); // Fetch without a search term
     }, []);
+
+    // Handle changes in the search bar
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value); // Update search term state
+    };
+
+    // Handle search button click
+    const handleSearchClick = () => {
+        fetchPeople(searchTerm); // Trigger fetch when search button is clicked
+    };
 
     return (
         <div>
             <h1>Top Actors</h1>
             <p>Welcome to the People page, search and browse your favorite actors and movie crew members here.</p>
+
+            {/* Search Bar and Button */}
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <input
+                    type="text"
+                    placeholder="Search for actors..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    style={{
+                        width: "50%",
+                        padding: "10px",
+                        fontSize: "16px",
+                        borderRadius: "5px",
+                        border: "1px solid #ccc",
+                        marginRight: "10px",
+                    }}
+                />
+                <button
+                    onClick={handleSearchClick}
+                    style={{
+                        padding: "10px 20px",
+                        fontSize: "16px",
+                        borderRadius: "5px",
+                        border: "none",
+                        backgroundColor: "#007bff",
+                        color: "white",
+                        cursor: "pointer",
+                    }}
+                >
+                    Search
+                </button>
+            </div>
+
+            {isLoading && <p>Loading...</p>}
             {error && <p style={{ color: "red" }}>{error}</p>}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+
+            <div
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(5, 1fr)", // 5 equal-width columns
+                    gap: "15px 10px", // Smaller gap: 15px vertically, 10px horizontally
+                    maxWidth: "1200px", // Restrict the grid width
+                    margin: "0 auto", // Center the container horizontally
+                    padding: "20px", // Add space on the sides
+                }}
+            >
+
                 {people.map((person) => (
                     <Link
                         to={`/people/${person.nConst}`}
@@ -67,10 +139,10 @@ const People = () => {
                         key={person.nConst}
                     >
                         <PeopleCard
-                            name={person.primaryName} // Corrected casing
-                            imageUrl={person.photo} // Image from TMDB or placeholder
+                            name={person.primaryName}
+                            imageUrl={person.photo}
                             rating={person.aRating}
-                            birth={person.birthYear} // Corrected casing
+                            birth={person.birthYear}
                         />
                     </Link>
                 ))}
