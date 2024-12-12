@@ -9,7 +9,6 @@ import Profile from './views/Profile';
 import Bookmarks from './views/Bookmarks';
 import Login from './views/Login';
 import Register from './views/Register';
-import Movies from "./views/Movies";
 import MovieDetail from "./views/MovieDetail";
 import People from "./views/People"
 import PersonDetail from './views/PersonDetail';
