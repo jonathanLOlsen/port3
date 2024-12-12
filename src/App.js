@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './AuthContext';
 import Header from './layout/Header';
 import Home from './views/Home';
 import About from './views/About';
+import Movies from './views/Movies';
 import Profile from './views/Profile';
 import Bookmarks from './views/Bookmarks';
 import Login from './views/Login';
