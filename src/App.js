@@ -11,6 +11,7 @@ import Register from './views/Register';
 import MovieDetail from "./views/MovieDetail";
 import People from "./views/People"
 import PersonDetail from './views/PersonDetail';
+import Movies from "./views/Movies"
 
 // ProtectedRoute function to guard routes
 const ProtectedRoute = ({ children }) => {
@@ -47,6 +48,7 @@ function App() {
                     <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
                     <Route path="/people" element={<People />} />
                     <Route path="/people/:nConst" element={<PersonDetail />} />
+                    <Route path="/movies" element={<Movies />} />
                     <Route path="/movies/:id" element={<MovieDetail />} />
 
                     {/* Protected Routes */}
