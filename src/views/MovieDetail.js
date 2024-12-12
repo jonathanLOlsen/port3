@@ -2,34 +2,32 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_BASE_URL } from "../config/Config";
+import Carousel from "../components/Carousel";
 
 const MovieDetail = () => {
   const { id } = useParams(); // Get the movie ID (tConst) from the route
-  console.log("Movie ID:", id);
   const [movie, setMovie] = useState(null); // Store movie details
-  const [nameBasics, setNameBasics] = useState(null); // Store name details
+  const [similarMovies, setSimilarMovies] = useState([]); // Store similar movies
   const [loading, setLoading] = useState(true); // Track loading state
   const [error, setError] = useState(null); // Track errors
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
-        console.log("Fetching movie details from:", `${API_BASE_URL}/TitleBasics/${id}`);
+        console.log(`Fetching movie details for tconst: ${id}`);
         const movieResponse = await axios.get(`${API_BASE_URL}/TitleBasics/${id}`);
         setMovie(movieResponse.data); // Store the movie details
 
-        // Fetch additional details from NameBasics endpoint
-        try {
-          const nameBasicsResponse = await axios.get(`${API_BASE_URL}/NameBasics/${id}`);
-          setNameBasics(nameBasicsResponse.data); // Store the name details
-        } catch (nameErr) {
-          console.warn("Name details not found:", nameErr);
-          setNameBasics(null); // Handle gracefully if NameBasics is not found
-        }
+        console.log("Fetching similar movies...");
+        const similarMoviesResponse = await axios.get(
+          `${API_BASE_URL}/TitleBasics/similar-movies`,
+          { params: { tconst: id } } // Correct query parameter
+        );
+        setSimilarMovies(similarMoviesResponse.data); // Store similar movies
 
         setLoading(false);
       } catch (err) {
-        console.error("Failed to fetch movie details:", err);
+        console.error("Error fetching details:", err);
         setError("Failed to load movie details. Please try again later.");
         setLoading(false);
       }
@@ -56,23 +54,14 @@ const MovieDetail = () => {
           </ul>
         </div>
       ) : (
-        <div>No movie details available.</div>
+        <div>No movie details found.</div>
       )}
-      <h2>Name Basics</h2>
-      {nameBasics ? (
-        <pre
-          style={{
-            background: "#f4f4f4",
-            padding: "10px",
-            borderRadius: "8px",
-            overflowX: "auto",
-            fontFamily: "monospace",
-          }}
-        >
-          {JSON.stringify(nameBasics, null, 2)} {/* Display name details */}
-        </pre>
+
+      <h2>Similar Movies</h2>
+      {similarMovies.length > 0 ? (
+        <Carousel movies={similarMovies} visibleCount={5} />
       ) : (
-        <div>No name details available.</div>
+        <div>No similar movies found.</div>
       )}
     </div>
   );
