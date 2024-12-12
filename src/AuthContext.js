@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }) => {
         setUserId(userId);
         setUserEmail(userEmail);
 
+        console.log('User is authenticated', isAuthenticated());
         console.log('Token stored in localStorage:', localStorage.getItem('token'));
         console.log('Username stored in localStorage:', localStorage.getItem('username'));
         console.log('UserId stored in localStorage:', localStorage.getItem('userId'));

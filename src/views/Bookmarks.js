@@ -6,10 +6,15 @@ const Bookmarks = () => {
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { userId, logout } = useAuth();
+  const { userId } = useAuth();
 
   // Fetch bookmarks from the backend
   useEffect(() => {
+
+    const token = localStorage.getItem('token');
+    console.log("Token used for fetch:", token);
+    console.log("User ID used for fetch:", userId);
+
     const fetchBookmarks = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -23,12 +28,6 @@ const Bookmarks = () => {
 
         if (!response.ok) {
           throw new Error("Failed to load bookmarks");
-        }
-
-        if (response.status === 401) {
-            console.error("Unauthorized access. Please log in again.");
-            setError("Your session has expired. Please log in again.");
-            logout(); // Call logout function to clear token and redirect to login
         }
 
         const bookmarksData = await response.json();
