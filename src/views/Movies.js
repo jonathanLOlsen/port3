@@ -45,7 +45,7 @@ const Movies = () => {
               return {
                 ...movie,
                 poster: tmdbMovie?.poster_path
-                  ? `https://image.tmdb.org/t/p/w500${tmdbMovie.poster_path}`
+                  ? `http://image.tmdb.org/t/p/w500${tmdbMovie.poster_path}`
                   : null,
                 plot: movie.plot || tmdbMovie?.overview || "No description available.",
               };
@@ -91,7 +91,7 @@ const Movies = () => {
             <DynamicLink id={movie.tConst} type="movies">
               {/* Movie Poster */}
               <img
-                src={movie.poster || "https://via.placeholder.com/150x200"}
+                src={movie.poster || "http://via.placeholder.com/150x200"}
                 alt={movie.primaryTitle}
                 style={{ width: "150px", height: "200px", objectFit: "cover" }}
               />

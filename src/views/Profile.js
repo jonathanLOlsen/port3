@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthContext';
+import { useAuth} from '../AuthContext';
 
 const Profile = () => {
     const { isAuthenticated, username, logout, loading } = useAuth();
