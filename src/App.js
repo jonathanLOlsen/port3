@@ -3,10 +3,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './AuthContext';
 import Header from './layout/Header';
 import Home from './views/Home';
+import About from './views/About';
 import Profile from './views/Profile';
 import Bookmarks from './views/Bookmarks';
 import Login from './views/Login';
 import Register from './views/Register';
+import MovieDetail from "./views/MovieDetail";
+import People from "./views/People"
+import PersonDetail from './views/PersonDetail';
 
 // ProtectedRoute function to guard routes
 const ProtectedRoute = ({ children }) => {
@@ -38,8 +42,12 @@ function App() {
                 <Routes>
                     {/* Public Routes */}
                     <Route path="/" element={<Home />} />
+                    <Route path="/about" element={<About />} />
                     <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
                     <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+                    <Route path="/people" element={<People />} />
+                    <Route path="/people/:nConst" element={<PersonDetail />} />
+                    <Route path="/movies/:id" element={<MovieDetail />} />
 
                     {/* Protected Routes */}
                     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

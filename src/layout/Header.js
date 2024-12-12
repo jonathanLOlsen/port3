@@ -25,6 +25,8 @@ const Header = () => {
                     <Link to="/" className="nav-link">Home</Link>
                     <Link to="/about" className="nav-link">About</Link>
                     <Link to="/movies" className="nav-link">Movies</Link>
+                    <Link to="/people" className= "nav-link">People</Link>
+                    
                 </div>
 
                 <div className="profile-section" ref={dropdownRef}>
