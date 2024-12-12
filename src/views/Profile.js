@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth} from '../AuthContext';
 
 const Profile = () => {
-    const { isAuthenticated, username, logout, loading } = useAuth();
+    const { isAuthenticated, username, userEmail, logout, loading } = useAuth();
 
     const navigate = useNavigate();
 
@@ -27,6 +27,7 @@ const Profile = () => {
     return (
         <div>
             <h1>Hello, {username}</h1>
+            <p>Email: {userEmail}</p>
             <button onClick={() => navigate('/bookmarks')}>View Bookmarks</button>
             <button onClick={handleLogout}>Log out</button>
         </div>
