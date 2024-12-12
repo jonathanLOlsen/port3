@@ -12,7 +12,7 @@ const Profile = () => {
         if (!isAuthenticated && !loading) {
             navigate('/login');
         }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated, navigate, loading]);
 
 
     const handleLogout = () => {
