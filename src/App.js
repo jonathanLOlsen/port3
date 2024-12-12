@@ -8,6 +8,7 @@ import Profile from './views/Profile';
 import Bookmarks from './views/Bookmarks';
 import Login from './views/Login';
 import Register from './views/Register';
+import Movies from "./views/Movies";
 import MovieDetail from "./views/MovieDetail";
 import People from "./views/People"
 import PersonDetail from './views/PersonDetail';
@@ -47,6 +48,7 @@ function App() {
                     <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
                     <Route path="/people" element={<People />} />
                     <Route path="/people/:nConst" element={<PersonDetail />} />
+                    <Route path="/movies" element={<Movies/>}/>
                     <Route path="/movies/:id" element={<MovieDetail />} />
 
                     {/* Protected Routes */}
