@@ -1,0 +1,50 @@
+.people-container {
+    text-align: center;
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 20px;
+}
+
+.search-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    width: 50%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+.search-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+.error-text {
+    color: red;
+}
+
+.people-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px 10px;
+    margin: 0 auto;
+}
+
+.person-link {
+    text-decoration: none;
+    color: inherit;
+}
