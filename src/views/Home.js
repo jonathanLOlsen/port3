@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../config/Config";
 import MovieList from "../components/MovieList"; // Import MovieList
+import Dropdown from "../components/Dropdown"; // Import the generic Dropdown component
 
 const Home = () => {
   const [topRatedMovies, setTopRatedMovies] = useState([]);
@@ -11,16 +12,14 @@ const Home = () => {
 
   // Hardcoded list of title types
   const titleTypes = [
-    "video",
-    "tvSpecial",
-    "tvSeries",
-    "tvShort",
     "movie",
-    "tvMovie",
-    "short",
-    "tvMiniSeries",
-    "videoGame",
     "tvEpisode",
+    "tvSeries",
+    "tvMiniSeries",
+    "tvSpecial",
+    "short",
+    "video",
+    "documentary",
   ];
 
   useEffect(() => {
@@ -52,25 +51,13 @@ const Home = () => {
   return (
     <div style={{ padding: "20px", textAlign: "center" }}>
       <h1>Top-Rated {titleType}</h1>
-
-      {/* Dropdown to select titleType */}
-      <select
-        value={titleType}
-        onChange={(e) => setTitleType(e.target.value)}
-        style={{
-          marginBottom: "20px",
-          padding: "10px",
-          fontSize: "16px",
-          borderRadius: "5px",
-          border: "1px solid #ccc",
-        }}
-      >
-        {titleTypes.map((type) => (
-          <option key={type} value={type}>
-            {type}
-          </option>
-        ))}
-      </select>
+      
+      {/* Use the generic Dropdown component */}
+      <Dropdown
+        options={titleTypes} // Pass the list of title types
+        selectedValue={titleType} // Pass the selected value
+        onChange={setTitleType} // Pass the state update function
+      />
 
       <MovieList movies={topRatedMovies} /> {/* Render MovieList */}
     </div>
