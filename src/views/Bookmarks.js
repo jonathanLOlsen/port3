@@ -6,16 +6,29 @@ const Bookmarks = () => {
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { userId } = useAuth();
+  const { userId, logout } = useAuth();
 
   // Fetch bookmarks from the backend
   useEffect(() => {
     const fetchBookmarks = async () => {
       try {
-        const response = await fetch(`http://localhost:7247/api/UserBookmarks/user/${userId}/bookmarksWithTitles`);
+        const token = localStorage.getItem('token');
+
+        const response = await fetch(`http://localhost:7247/api/UserBookmarks/user/${userId}/bookmarksWithTitles`, {
+            headers: {
+                'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+                'Content-Type': 'application/json',
+            },
+        });
 
         if (!response.ok) {
           throw new Error("Failed to load bookmarks");
+        }
+
+        if (response.status === 401) {
+            console.error("Unauthorized access. Please log in again.");
+            setError("Your session has expired. Please log in again.");
+            logout(); // Call logout function to clear token and redirect to login
         }
 
         const bookmarksData = await response.json();
@@ -36,9 +49,15 @@ const Bookmarks = () => {
   // Handle removing a bookmark
   const handleRemove = async (bookmarkId) => {
     try {
-      const response = await fetch(`http://localhost:7247/api/UserBookmarks/${bookmarkId}`, {
-        method: "DELETE",
-      });
+        const token = localStorage.getItem('token'); // Get the token from localStorage
+
+        const response = await fetch(`http://localhost:7247/api/UserBookmarks/${bookmarkId}`, {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+                'Content-Type': 'application/json',
+            },
+        });
 
       if (!response.ok) {
         throw new Error("Failed to remove bookmark");
