@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import UpdateProfile from './UpdateProfile';
 import { useAuth} from '../AuthContext';
 
 const Profile = () => {
@@ -30,7 +31,12 @@ const Profile = () => {
             <p>Email: {userEmail}</p>
             <button onClick={() => navigate('/bookmarks')}>View Bookmarks</button>
             <button onClick={handleLogout}>Log out</button>
+            
+            <h1>Your Profile</h1>
+            <UpdateProfile />
+        
         </div>
+        
     );
 };
 

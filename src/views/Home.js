@@ -85,7 +85,7 @@ const Home = () => {
             <img
               src={movie.poster}
               alt={movie.primaryTitle}
-              style={{ width: "150px", height: "200px" }}
+              style={{ width: "217px", height: "300px" }}
             />
             <p>{movie.primaryTitle}</p>
             <p>{movie.startYear}</p>
@@ -108,7 +108,7 @@ const Home = () => {
             <img
               src={movie.poster}
               alt={movie.primaryTitle}
-              style={{ width: "150px", height: "200px" }}
+              style={{ width: "217px", height: "300px" }}
             />
             <p>{movie.primaryTitle}</p>
             <p>{movie.startYear}</p>
