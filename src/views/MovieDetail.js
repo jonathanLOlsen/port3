@@ -18,7 +18,7 @@ const fetchProfileImage = async (name) => {
   } catch (error) {
     console.error(`Failed to fetch TMDB profile for ${name}:`, error);
   }
-  return "https://via.placeholder.com/150x200"; // Default image
+  return "https://via.placeholder.com/150x200"; // Default placeholder image
 };
 
 const MovieDetail = () => {
@@ -34,6 +34,7 @@ const MovieDetail = () => {
       try {
         console.log(`Fetching movie details for tconst: ${id}`);
         const movieResponse = await axios.get(`${API_BASE_URL}/TitleBasics/${id}`);
+        console.log("Fetched Movie Data:", movieResponse.data); // Debug log
         setMovie(movieResponse.data);
 
         console.log("Fetching similar movies...");
@@ -41,13 +42,15 @@ const MovieDetail = () => {
           `${API_BASE_URL}/TitleBasics/similar-movies`,
           { params: { tconst: id } }
         );
-        setSimilarMovies(similarMoviesResponse.data || []); // Fallback to empty array
+        console.log("Fetched Similar Movies:", similarMoviesResponse.data); // Debug log
+        setSimilarMovies(similarMoviesResponse.data || []);
 
         console.log("Fetching movie cast...");
         const movieCastResponse = await axios.get(
           `${API_BASE_URL}/TitleBasics/movie-cast`,
           { params: { tconst: id } }
         );
+        console.log("Fetched Movie Cast:", movieCastResponse.data); // Debug log
         const updatedCast = await Promise.all(
           (movieCastResponse.data || []).map(async (castMember) => ({
             ...castMember,
@@ -72,16 +75,37 @@ const MovieDetail = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>{movie.titleType} Details</h1>
+      <h1>{movie?.titleType || "Movie"} Details</h1>
       {movie ? (
         <div>
-          <h2>{movie.primaryTitle}</h2>
-          <p>{movie.plot}</p>
-          {movie.poster && <img src={movie.poster} alt={movie.primaryTitle} style={{ maxWidth: "300px" }} />}
+          <h2>{movie.primaryTitle || "Untitled"}</h2>
+          <p>{movie.plot || "Plot information is not available."}</p>
+          {movie.poster ? (
+            <img
+              src={movie.poster}
+              alt={movie.primaryTitle || "Poster"}
+              style={{ maxWidth: "300px" }}
+            />
+          ) : (
+            <img
+              src="https://via.placeholder.com/300"
+              alt="No poster available"
+              style={{ maxWidth: "300px" }}
+            />
+          )}
           <ul>
-            <li><strong>Type:</strong> {movie.titleType}</li>
-            <li><strong>Start Year:</strong> {movie.startYear}</li>
-            <li><strong>Runtime:</strong> {movie.runtimeMinutes} minutes</li>
+            <li>
+              <strong>Type:</strong> {movie.titleType || "Unknown"}
+            </li>
+            <li>
+              <strong>Start Year:</strong> {movie.startYear || "Unknown"}
+            </li>
+            <li>
+              <strong>Runtime:</strong>{" "}
+              {movie.runtimeMinutes !== null && movie.runtimeMinutes !== undefined
+                ? `${movie.runtimeMinutes} minutes`
+                : "Runtime not available"}
+            </li>
           </ul>
         </div>
       ) : (
@@ -114,33 +138,30 @@ const MovieDetail = () => {
       <h2>Similar Movies</h2>
       {similarMovies.length > 0 ? (
         <Carousel
-        items={similarMovies || []} // Ensure items is never undefined
-        visibleCount={5}
-        renderItem={(movie) => {
-          // Truncate the plot to a maximum of 150 characters
-          const truncatedPlot = movie.plot
-            ? movie.plot.length > 150
-              ? movie.plot.substring(0, 150) + "..."
-              : movie.plot
-            : "No Plot Available";
-      
-          return (
-            <DynamicLink id={movie.similar_tconst || "undefined"} type="movies">
-              <div>
-                <img
-                  src={movie.poster || "https://via.placeholder.com/150x200"}
-                  alt={movie.primarytitle || "No Title"}
-                  style={{ width: "150px", height: "200px" }}
-                />
-                <p>{movie.primarytitle || "Unknown Title"}</p>
-                <p style={{ fontSize: "14px" }}>{truncatedPlot}</p> {/* Show truncated plot */}
-              </div>
-            </DynamicLink>
-          );
-        }}
-      />
-      
-      
+          items={similarMovies}
+          visibleCount={5}
+          renderItem={(movie) => {
+            const truncatedPlot = movie.plot
+              ? movie.plot.length > 150
+                ? movie.plot.substring(0, 150) + "..."
+                : movie.plot
+              : "No Plot Available";
+
+            return (
+              <DynamicLink id={movie.similar_tconst || "undefined"} type="movies">
+                <div>
+                  <img
+                    src={movie.poster || "https://via.placeholder.com/150x200"}
+                    alt={movie.primarytitle || "No Title"}
+                    style={{ width: "181px", height: "250px" }}
+                  />
+                  <p>{movie.primarytitle || "Unknown Title"}</p>
+                  <p style={{ fontSize: "14px" }}>{truncatedPlot}</p>
+                </div>
+              </DynamicLink>
+            );
+          }}
+        />
       ) : (
         <div>No similar movies found.</div>
       )}
