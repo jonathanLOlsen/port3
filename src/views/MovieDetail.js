@@ -72,7 +72,7 @@ const MovieDetail = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Movie Details</h1>
+      <h1>{movie.titleType} Details</h1>
       {movie ? (
         <div>
           <h2>{movie.primaryTitle}</h2>
