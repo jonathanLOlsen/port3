@@ -51,12 +51,30 @@ const MovieDetail = () => {
           { params: { tconst: id } }
         );
         console.log("Fetched Movie Cast:", movieCastResponse.data); // Debug log
+
+        // Deduplicate and combine roles
+        const uniqueCast = movieCastResponse.data.reduce((acc, current) => {
+          const existingMember = acc.find((member) => member.nconst === current.nconst);
+
+          if (existingMember) {
+            // Combine roles if the member already exists
+            existingMember.role = `${existingMember.role}/${current.role}`;
+          } else {
+            // Add new member if not already in the accumulator
+            acc.push({ ...current });
+          }
+
+          return acc;
+        }, []);
+
+        // Fetch profile images for each unique cast member
         const updatedCast = await Promise.all(
-          (movieCastResponse.data || []).map(async (castMember) => ({
+          uniqueCast.map(async (castMember) => ({
             ...castMember,
             photo: await fetchProfileImage(castMember.primaryname),
           }))
         );
+
         setMovieCast(updatedCast);
 
         setLoading(false);
@@ -114,54 +132,164 @@ const MovieDetail = () => {
 
       <h2>Cast</h2>
       {movieCast.length > 0 ? (
-        <Carousel
-          items={movieCast}
-          visibleCount={5}
-          renderItem={(castMember) => (
-            <DynamicLink id={castMember.nconst} type="people">
-              <div>
-                <img
-                  src={castMember.photo}
-                  alt={castMember.primaryname}
-                  style={{ width: "150px", height: "200px" }}
-                />
-                <p>{castMember.primaryname}</p>
-                <p style={{ fontSize: "14px" }}>{castMember.role}</p>
-              </div>
-            </DynamicLink>
-          )}
-        />
+       <Carousel
+       items={movieCast}
+       visibleCount={5}
+       renderItem={(castMember) => (
+         <DynamicLink id={castMember.nconst} type="people">
+           <div
+             style={{
+               display: "flex",
+               flexDirection: "column",
+               alignItems: "center",
+               justifyContent: "space-between", // Ensure even spacing
+               width: "181px", // Fixed width for all items
+               height: "250px", // Fixed height for all items
+               border: "1px solid #ccc", // Optional for debugging or style
+               borderRadius: "5px", // Rounded corners
+               overflow: "hidden", // Prevent content overflow
+               backgroundColor: "#f9f9f9", // Light background for consistency
+             }}
+           >
+             <div
+               style={{
+                 width: "100%", // Full width for image or placeholder
+                 height: "70%", // Fixed height for image or placeholder
+                 backgroundColor: "#e0e0e0", // Placeholder background
+                 display: "flex",
+                 alignItems: "center",
+                 justifyContent: "center",
+               }}
+             >
+               {castMember.photo ? (
+                 <img
+                   src={castMember.photo}
+                   alt={castMember.primaryname || "Unknown Name"}
+                   onError={(e) => {
+                     e.target.src = "https://via.placeholder.com/150x200"; // Fallback for broken images
+                   }}
+                   style={{
+                     width: "100%",
+                     height: "100%",
+                     objectFit: "cover", // Ensure the image scales correctly
+                   }}
+                 />
+               ) : (
+                 <span
+                   style={{
+                     fontSize: "12px",
+                     color: "#555",
+                   }}
+                 >
+                   No Image
+                 </span>
+               )}
+             </div>
+             <div
+               style={{
+                 padding: "5px", // Add spacing around the text
+                 textAlign: "center",
+               }}
+             >
+               <p style={{ margin: "5px 0", fontWeight: "bold" }}>
+                 {castMember.primaryname || "Unknown Name"}
+               </p>
+               <p style={{ margin: "5px 0", fontSize: "14px" }}>
+                 {castMember.role || "Unknown Role"}
+               </p>
+             </div>
+           </div>
+         </DynamicLink>
+       )}
+     />
+     
+     
+     
+      
       ) : (
         <div>No cast information found.</div>
       )}
 
       <h2>Similar Movies</h2>
       {similarMovies.length > 0 ? (
-        <Carousel
-          items={similarMovies}
-          visibleCount={5}
-          renderItem={(movie) => {
-            const truncatedPlot = movie.plot
-              ? movie.plot.length > 150
-                ? movie.plot.substring(0, 150) + "..."
-                : movie.plot
-              : "No Plot Available";
-
-            return (
-              <DynamicLink id={movie.similar_tconst || "undefined"} type="movies">
-                <div>
-                  <img
-                    src={movie.poster || "https://via.placeholder.com/150x200"}
-                    alt={movie.primarytitle || "No Title"}
-                    style={{ width: "181px", height: "250px" }}
-                  />
-                  <p>{movie.primarytitle || "Unknown Title"}</p>
-                  <p style={{ fontSize: "14px" }}>{truncatedPlot}</p>
-                </div>
-              </DynamicLink>
-            );
-          }}
-        />
+       <Carousel
+       items={similarMovies}
+       visibleCount={5}
+       renderItem={(movie) => {
+         const truncatedPlot = movie.plot
+           ? movie.plot.length > 150
+             ? movie.plot.substring(0, 150) + "..."
+             : movie.plot
+           : "No Plot Available";
+     
+         return (
+           <DynamicLink id={movie.similar_tconst || "undefined"} type="movies">
+             <div
+               style={{
+                 display: "flex",
+                 flexDirection: "column",
+                 alignItems: "center",
+                 justifyContent: "space-between", // Space between elements
+                 width: "181px", // Fixed width
+                 height: "300px", // Fixed height
+                 border: "1px solid #ccc", // Optional for debugging or style
+                 borderRadius: "5px", // Rounded corners
+                 overflow: "hidden", // Prevent overflow of content
+                 backgroundColor: "#f9f9f9", // Consistent background
+                 padding: "10px", // Padding inside the box
+               }}
+             >
+               <div
+                 style={{
+                   width: "100%", // Full width
+                   height: "70%", // Reserved space for the image
+                   backgroundColor: "#e0e0e0", // Placeholder background
+                   display: "flex",
+                   alignItems: "center",
+                   justifyContent: "center",
+                 }}
+               >
+                 {movie.poster ? (
+                   <img
+                     src={movie.poster}
+                     alt={movie.primarytitle || "Unknown Title"}
+                     onError={(e) => {
+                       e.target.src = "https://via.placeholder.com/150x200"; // Fallback for broken images
+                     }}
+                     style={{
+                       width: "100%",
+                       height: "100%",
+                       objectFit: "cover", // Ensure proper scaling
+                     }}
+                   />
+                 ) : (
+                   <span
+                     style={{
+                       fontSize: "12px",
+                       color: "#555",
+                     }}
+                   >
+                     No Image
+                   </span>
+                 )}
+               </div>
+               <div
+                 style={{
+                   textAlign: "center",
+                   marginTop: "10px",
+                 }}
+               >
+                 <p style={{ margin: "5px 0", fontWeight: "bold" }}>
+                   {movie.primarytitle || "Unknown Title"}
+                 </p>
+                 <p style={{ margin: "5px 0", fontSize: "14px" }}>{truncatedPlot}</p>
+               </div>
+             </div>
+           </DynamicLink>
+         );
+       }}
+     />
+     
       ) : (
         <div>No similar movies found.</div>
       )}
