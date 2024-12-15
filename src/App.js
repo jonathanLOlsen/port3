@@ -12,6 +12,7 @@ import MovieDetail from "./views/MovieDetail";
 import People from "./views/People";
 import PersonDetail from './views/PersonDetail';
 import Movies from "./views/Movies";
+import UpdateProfile from './views/UpdateProfile';
 
 // ProtectedRoute function to guard routes
 const ProtectedRoute = ({ children }) => {
@@ -54,6 +55,7 @@ function App() {
                         {/* Protected Routes */}
                         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                         <Route path="/bookmarks" element={<ProtectedRoute><Bookmarks /></ProtectedRoute>} />
+                        <Route path="/update-profile" element={<ProtectedRoute><UpdateProfile /></ProtectedRoute>} />
                     </Routes>
                 </MainLayout>
             </Router>
