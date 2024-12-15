@@ -26,31 +26,65 @@ const MovieDetail = () => {
   const [movie, setMovie] = useState(null);
   const [similarMovies, setSimilarMovies] = useState([]); // Default: empty array
   const [movieCast, setMovieCast] = useState([]); // Default: empty array
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState({
+    movie: true,
+    similarMovies: true,
+    cast: true,
+  });
+  const [error, setError] = useState({
+    movie: null,
+    similarMovies: null,
+    cast: null,
+  });
 
   useEffect(() => {
+    // Fetch movie details
     const fetchMovieDetails = async () => {
       try {
         console.log(`Fetching movie details for tconst: ${id}`);
         const movieResponse = await axios.get(`${API_BASE_URL}/TitleBasics/${id}`);
-        console.log("Fetched Movie Data:", movieResponse.data); // Debug log
         setMovie(movieResponse.data);
+        setError((prev) => ({ ...prev, movie: null })); // Clear movie error
+      } catch (err) {
+        console.error("Error fetching movie details:", err);
+        setError((prev) => ({
+          ...prev,
+          movie: "Failed to load movie details. Please try again later.",
+        }));
+      } finally {
+        setLoading((prev) => ({ ...prev, movie: false }));
+      }
+    };
 
+    // Fetch similar movies
+    const fetchSimilarMovies = async () => {
+      try {
         console.log("Fetching similar movies...");
         const similarMoviesResponse = await axios.get(
           `${API_BASE_URL}/TitleBasics/similar-movies`,
           { params: { tconst: id } }
         );
-        console.log("Fetched Similar Movies:", similarMoviesResponse.data); // Debug log
         setSimilarMovies(similarMoviesResponse.data || []);
+        setError((prev) => ({ ...prev, similarMovies: null })); // Clear similar movies error
+      } catch (err) {
+        console.error("Error fetching similar movies:", err);
+        setError((prev) => ({
+          ...prev,
+          similarMovies: "Failed to load similar movies. Please try again later.",
+        }));
+      } finally {
+        setLoading((prev) => ({ ...prev, similarMovies: false }));
+      }
+    };
 
+    // Fetch movie cast
+    const fetchMovieCast = async () => {
+      try {
         console.log("Fetching movie cast...");
         const movieCastResponse = await axios.get(
           `${API_BASE_URL}/TitleBasics/movie-cast`,
           { params: { tconst: id } }
         );
-        console.log("Fetched Movie Cast:", movieCastResponse.data); // Debug log
         const updatedCast = await Promise.all(
           (movieCastResponse.data || []).map(async (castMember) => ({
             ...castMember,
@@ -58,25 +92,33 @@ const MovieDetail = () => {
           }))
         );
         setMovieCast(updatedCast);
-
-        setLoading(false);
+        setError((prev) => ({ ...prev, cast: null })); // Clear cast error
       } catch (err) {
-        console.error("Error fetching details:", err);
-        setError("Failed to load movie details. Please try again later.");
-        setLoading(false);
+        console.error("Error fetching movie cast:", err);
+        setError((prev) => ({
+          ...prev,
+          cast: "Failed to load movie cast. Please try again later.",
+        }));
+      } finally {
+        setLoading((prev) => ({ ...prev, cast: false }));
       }
     };
 
     fetchMovieDetails();
+    fetchSimilarMovies();
+    fetchMovieCast();
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  if (loading.movie && loading.similarMovies && loading.cast) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div style={{ padding: "20px" }}>
       <h1>{movie?.titleType || "Movie"} Details</h1>
-      {movie ? (
+      {error.movie ? (
+        <div style={{ color: "red" }}>{error.movie}</div>
+      ) : movie ? (
         <div>
           <h2>{movie.primaryTitle || "Untitled"}</h2>
           <p>{movie.plot || "Plot information is not available."}</p>
@@ -113,30 +155,35 @@ const MovieDetail = () => {
       )}
 
       <h2>Cast</h2>
-      {movieCast.length > 0 ? (
+      {error.cast ? (
+        <div style={{ color: "red" }}>{error.cast}</div>
+      ) : movieCast.length > 0 ? (
         <Carousel
           items={movieCast}
           visibleCount={5}
           renderItem={(castMember) => (
             <DynamicLink id={castMember.nconst} type="people">
-              <div>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "150px", height: "300px" }}>
                 <img
-                  src={castMember.photo}
-                  alt={castMember.primaryname}
-                  style={{ width: "150px", height: "200px" }}
+                  src={castMember.photo || "https://via.placeholder.com/150x200"}
+                  alt={castMember.primaryname || "Unknown Name"}
+                  style={{ width: "150px", height: "200px", objectFit: "cover", borderRadius: "4px" }}
                 />
-                <p>{castMember.primaryname}</p>
-                <p style={{ fontSize: "14px" }}>{castMember.role}</p>
+                <p style={{ margin: "10px 0 5px", fontWeight: "bold" }}>{castMember.primaryname || "Unknown Name"}</p>
+                <p style={{ fontSize: "14px", color: "#666" }}>{castMember.role || "Unknown Role"}</p>
               </div>
             </DynamicLink>
           )}
         />
+
       ) : (
         <div>No cast information found.</div>
       )}
 
       <h2>Similar Movies</h2>
-      {similarMovies.length > 0 ? (
+      {error.similarMovies ? (
+        <div style={{ color: "red" }}>{error.similarMovies}</div>
+      ) : similarMovies.length > 0 ? (
         <Carousel
           items={similarMovies}
           visibleCount={5}
@@ -149,19 +196,20 @@ const MovieDetail = () => {
 
             return (
               <DynamicLink id={movie.similar_tconst || "undefined"} type="movies">
-                <div>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "181px", height: "350px" }}>
                   <img
-                    src={movie.poster || "https://via.placeholder.com/150x200"}
+                    src={movie.poster || "https://via.placeholder.com/181x250"}
                     alt={movie.primarytitle || "No Title"}
-                    style={{ width: "181px", height: "250px" }}
+                    style={{ width: "181px", height: "250px", objectFit: "cover", borderRadius: "4px" }}
                   />
-                  <p>{movie.primarytitle || "Unknown Title"}</p>
-                  <p style={{ fontSize: "14px" }}>{truncatedPlot}</p>
+                  <p style={{ margin: "10px 0 5px", fontWeight: "bold" }}>{movie.primarytitle || "Unknown Title"}</p>
+                  <p style={{ fontSize: "14px", color: "#666", textAlign: "center" }}>{truncatedPlot}</p>
                 </div>
               </DynamicLink>
             );
           }}
         />
+        
       ) : (
         <div>No similar movies found.</div>
       )}
