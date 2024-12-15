@@ -48,7 +48,7 @@ const Movies = () => {
 
   return (
     <div className="container my-5">
-      <h1 className="text-center mb-5 display-4">Top 5 Movies By Genre</h1>
+      <h1 className="text-center mb-5 display-4">Top 5 Titles By Genre</h1>
       {Object.entries(moviesByGenre).map(([genre, movies]) => (
         <div key={genre} className="mb-5">
           <h2 className="text-center mb-3">{genre}</h2>
