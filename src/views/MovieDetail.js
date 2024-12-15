@@ -18,14 +18,14 @@ const fetchProfileImage = async (name) => {
   } catch (error) {
     console.error(`Failed to fetch TMDB profile for ${name}:`, error);
   }
-  return "https://via.placeholder.com/150x200"; // Default placeholder image
+  return "https://via.placeholder.com/150x200"; // Default image
 };
 
 const MovieDetail = () => {
-  const { id } = useParams(); // Get the movie ID (tConst) from the route
+  const { id } = useParams();
   const [movie, setMovie] = useState(null);
-  const [similarMovies, setSimilarMovies] = useState([]); // Default: empty array
-  const [movieCast, setMovieCast] = useState([]); // Default: empty array
+  const [similarMovies, setSimilarMovies] = useState([]); //empty array
+  const [movieCast, setMovieCast] = useState([]); //empty array
   const [loading, setLoading] = useState({
     movie: true,
     similarMovies: true,
@@ -106,7 +106,7 @@ const MovieDetail = () => {
 
     fetchMovieDetails();
     fetchSimilarMovies();
-    fetchMovieCast();
+    fetchMovieCast(); 
   }, [id]);
 
   if (loading.movie && loading.similarMovies && loading.cast) {
