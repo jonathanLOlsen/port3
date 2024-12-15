@@ -1,20 +1,14 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Header = () => {
-  const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef(null);
   const { isAuthenticated, username, loading } = useAuth();
 
   if (loading) {
     return <div>Loading...</div>;
   }
-
-  const toggleDropdown = () => {
-    setShowDropdown(!showDropdown);
-  };
 
   return (
     <header>
@@ -58,28 +52,9 @@ const Header = () => {
           </ul>
           <div className="d-flex align-items-center">
             {isAuthenticated ? (
-              <div className="dropdown" ref={dropdownRef}>
-                <button
-                  className="btn btn-outline-light dropdown-toggle"
-                  onClick={toggleDropdown}
-                >
-                  {username || "Profile"}
-                </button>
-                {showDropdown && (
-                  <ul className="dropdown-menu dropdown-menu-end show">
-                    <li>
-                      <Link to="/profile" className="dropdown-item">
-                        Profile
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/bookmarks" className="dropdown-item">
-                        Bookmarks
-                      </Link>
-                    </li>
-                  </ul>
-                )}
-              </div>
+              <Link to="/profile" className="btn btn-outline-light">
+                {username || "Profile"}
+              </Link>
             ) : (
               <Link to="/login" className="btn btn-outline-light">
                 Log In
