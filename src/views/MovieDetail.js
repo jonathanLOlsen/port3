@@ -4,8 +4,8 @@ import axios from "axios";
 import { API_BASE_URL, TMDB_API_KEY, TMDB_BASE_URL } from "../config/Config";
 import Carousel from "../components/Carousel";
 import DynamicLink from "../components/DynamicLink";
+import { useAuth } from "../AuthContext";
 
-// Utility function to fetch TMDB profile images
 const fetchProfileImage = async (name) => {
   try {
     const response = await axios.get(`${TMDB_BASE_URL}/search/person`, {
@@ -23,9 +23,10 @@ const fetchProfileImage = async (name) => {
 
 const MovieDetail = () => {
   const { id } = useParams();
+  const { userId, username } = useAuth();
   const [movie, setMovie] = useState(null);
-  const [similarMovies, setSimilarMovies] = useState([]); //empty array
-  const [movieCast, setMovieCast] = useState([]); //empty array
+  const [similarMovies, setSimilarMovies] = useState([]);
+  const [movieCast, setMovieCast] = useState([]);
   const [loading, setLoading] = useState({
     movie: true,
     similarMovies: true,
@@ -36,15 +37,14 @@ const MovieDetail = () => {
     similarMovies: null,
     cast: null,
   });
+  const [bookmarkMessage, setBookmarkMessage] = useState(null);
 
   useEffect(() => {
-    // Fetch movie details
     const fetchMovieDetails = async () => {
       try {
-        console.log(`Fetching movie details for tconst: ${id}`);
         const movieResponse = await axios.get(`${API_BASE_URL}/TitleBasics/${id}`);
         setMovie(movieResponse.data);
-        setError((prev) => ({ ...prev, movie: null })); // Clear movie error
+        setError((prev) => ({ ...prev, movie: null }));
       } catch (err) {
         console.error("Error fetching movie details:", err);
         setError((prev) => ({
@@ -56,16 +56,14 @@ const MovieDetail = () => {
       }
     };
 
-    // Fetch similar movies
     const fetchSimilarMovies = async () => {
       try {
-        console.log("Fetching similar movies...");
         const similarMoviesResponse = await axios.get(
           `${API_BASE_URL}/TitleBasics/similar-movies`,
           { params: { tconst: id } }
         );
         setSimilarMovies(similarMoviesResponse.data || []);
-        setError((prev) => ({ ...prev, similarMovies: null })); // Clear similar movies error
+        setError((prev) => ({ ...prev, similarMovies: null }));
       } catch (err) {
         console.error("Error fetching similar movies:", err);
         setError((prev) => ({
@@ -77,10 +75,8 @@ const MovieDetail = () => {
       }
     };
 
-    // Fetch movie cast
     const fetchMovieCast = async () => {
       try {
-        console.log("Fetching movie cast...");
         const movieCastResponse = await axios.get(
           `${API_BASE_URL}/TitleBasics/movie-cast`,
           { params: { tconst: id } }
@@ -92,7 +88,7 @@ const MovieDetail = () => {
           }))
         );
         setMovieCast(updatedCast);
-        setError((prev) => ({ ...prev, cast: null })); // Clear cast error
+        setError((prev) => ({ ...prev, cast: null }));
       } catch (err) {
         console.error("Error fetching movie cast:", err);
         setError((prev) => ({
@@ -106,15 +102,66 @@ const MovieDetail = () => {
 
     fetchMovieDetails();
     fetchSimilarMovies();
-    fetchMovieCast(); 
+    fetchMovieCast();
   }, [id]);
+
+  const handleBookmark = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${API_BASE_URL}/UserBookmarks`,
+        {
+          userId,
+          tconst: id,
+          note: `${username}'s bookmark`,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200 || response.status === 201) {
+        setBookmarkMessage("Movie successfully bookmarked!");
+      } else {
+        setBookmarkMessage("Failed to bookmark the movie.");
+      }
+    } catch (err) {
+      console.error("Error bookmarking movie:", err);
+      setBookmarkMessage("An error occurred while bookmarking the movie.");
+    } finally {
+      setTimeout(() => setBookmarkMessage(null), 3000);
+    }
+  };
 
   if (loading.movie && loading.similarMovies && loading.cast) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "20px", position: "relative" }}>
+      <button
+        onClick={handleBookmark}
+        style={{
+          position: "absolute",
+          top: "20px",
+          right: "20px",
+          backgroundColor: "#007bff",
+          color: "#fff",
+          border: "none",
+          padding: "10px 15px",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        Bookmark
+      </button>
+      {bookmarkMessage && (
+        <div style={{ position: "absolute", top: "60px", right: "20px", color: "green" }}>
+          {bookmarkMessage}
+        </div>
+      )}
       <h1>{movie?.titleType || "Movie"} Details</h1>
       {error.movie ? (
         <div style={{ color: "red" }}>{error.movie}</div>
@@ -135,20 +182,6 @@ const MovieDetail = () => {
               style={{ maxWidth: "300px" }}
             />
           )}
-          <ul>
-            <li>
-              <strong>Type:</strong> {movie.titleType || "Unknown"}
-            </li>
-            <li>
-              <strong>Start Year:</strong> {movie.startYear || "Unknown"}
-            </li>
-            <li>
-              <strong>Runtime:</strong>{" "}
-              {movie.runtimeMinutes !== null && movie.runtimeMinutes !== undefined
-                ? `${movie.runtimeMinutes} minutes`
-                : "Runtime not available"}
-            </li>
-          </ul>
         </div>
       ) : (
         <div>No movie details found.</div>
@@ -175,7 +208,6 @@ const MovieDetail = () => {
             </DynamicLink>
           )}
         />
-
       ) : (
         <div>No cast information found.</div>
       )}
@@ -187,35 +219,27 @@ const MovieDetail = () => {
         <Carousel
           items={similarMovies}
           visibleCount={5}
-          renderItem={(movie) => {
-            const truncatedPlot = movie.plot
-              ? movie.plot.length > 150
-                ? movie.plot.substring(0, 150) + "..."
-                : movie.plot
-              : "No Plot Available";
-
-            return (
-              <DynamicLink id={movie.similar_tconst || "undefined"} type="movies">
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "181px", height: "350px" }}>
-                  <img
-                    src={movie.poster || "https://via.placeholder.com/181x250"}
-                    alt={movie.primarytitle || "No Title"}
-                    style={{ width: "181px", height: "250px", objectFit: "cover", borderRadius: "4px" }}
-                  />
-                  <p style={{ margin: "10px 0 5px", fontWeight: "bold" }}>{movie.primarytitle || "Unknown Title"}</p>
-                  <p style={{ fontSize: "14px", color: "#666", textAlign: "center" }}>{truncatedPlot}</p>
-                </div>
-              </DynamicLink>
-            );
-          }}
+          renderItem={(movie) => (
+            <DynamicLink id={movie.similar_tconst || "undefined"} type="movies">
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "181px", height: "350px" }}>
+                <img
+                  src={movie.poster || "https://via.placeholder.com/181x250"}
+                  alt={movie.primarytitle || "No Title"}
+                  style={{ width: "181px", height: "250px", objectFit: "cover", borderRadius: "4px" }}
+                />
+                <p style={{ margin: "10px 0 5px", fontWeight: "bold" }}>{movie.primarytitle || "Unknown Title"}</p>
+                <p style={{ fontSize: "14px", color: "#666", textAlign: "center" }}>
+                  {movie.plot && movie.plot.length > 150
+                    ? movie.plot.substring(0, 150) + "..."
+                    : movie.plot || "No Plot Available"}
+                </p>
+              </div>
+            </DynamicLink>
+          )}
         />
-        
       ) : (
         <div>No similar movies found.</div>
       )}
-
-      {/* Back Button */}
-      <button onClick={() => window.history.back()}>Go Back</button>
     </div>
   );
 };
