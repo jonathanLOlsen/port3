@@ -111,8 +111,8 @@ const MovieDetail = () => {
     e.preventDefault();
   
     // Validate the rating
-    if (!userRating || userRating <= 1  || userRating >= 10) {
-      setRatingSuccess("Rating must be a number between 1 and 10.");
+    if (userRating === "" || userRating < 0 || userRating > 10) {
+      setRatingSuccess("Rating must be a number between 0 and 10.");
       return;
     }
   
@@ -237,7 +237,7 @@ const MovieDetail = () => {
           value={userRating}
           onChange={(e) => setUserRating(e.target.value)}
           placeholder="Enter a rating (0-10)"
-          min="1"
+          min="0"
           max="10"
           style={{
             padding: "10px",
