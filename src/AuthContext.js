@@ -5,11 +5,41 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
-    const [username, setUsername] = useState(localStorage.getItem('username') || '');
-    const [userId, setUserId] = useState(localStorage.getItem('userId') || '');
-    const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail') || '');
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [username, setUsername] = useState('');
+    const [userId, setUserId] = useState(null);
+    const [userEmail, setUserEmail] = useState('');
     const [loading, setLoading] = useState(true);
+
+    const setAuthData = ({ token, username, userId, userEmail }) => {
+        localStorage.setItem('token', token);
+        localStorage.setItem('username', username);
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('userEmail', userEmail);
+    };
+
+    const clearAuthData = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userEmail');
+    };
+
+    const login = (token, username, userId, userEmail) => {
+        setAuthData({ token, username, userId, userEmail });
+        setIsAuthenticated(true);
+        setUsername(username);
+        setUserId(userId);
+        setUserEmail(userEmail);
+    };
+
+    const logout = () => {
+        clearAuthData();
+        setIsAuthenticated(false);
+        setUsername('');
+        setUserId(null);
+        setUserEmail('');
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -17,61 +47,21 @@ export const AuthProvider = ({ children }) => {
         const storedUserId = localStorage.getItem('userId');
         const storedUserEmail = localStorage.getItem('userEmail');
 
-        console.log('AuthContext: Initial token:', token);
-        console.log('AuthContext: Initial username:', storedUsername);
-        console.log('AuthContext: Initial userId:', storedUserId);
-        console.log('AuthContext: Initial userEmail:', storedUserEmail);
-
-        if (token) {
+        if (token && storedUsername && storedUserId) {
             setIsAuthenticated(true);
             setUsername(storedUsername);
             setUserId(storedUserId);
             setUserEmail(storedUserEmail);
         } else {
-            setIsAuthenticated(false);
-            setUsername('');
-            setUserId('');
-            setUserEmail('');
+            logout();
         }
 
-        setLoading(false); // Indicate that loading is complete
+        setLoading(false);
     }, []);
-
-    const login = (token, username, userId, userEmail) => {
-        console.log('Login called with:', { token, username, userId, userEmail }); // Debug log
-
-        localStorage.setItem('token', token);
-        localStorage.setItem('username', username);
-        localStorage.setItem('userId', userId);
-        localStorage.setItem('userEmail', userEmail);
-
-        setIsAuthenticated(true);
-        setUsername(username);
-        setUserId(userId);
-        setUserEmail(userEmail);
-
-        console.log('User is authenticated', isAuthenticated());
-        console.log('Token stored in localStorage:', localStorage.getItem('token'));
-        console.log('Username stored in localStorage:', localStorage.getItem('username'));
-        console.log('UserId stored in localStorage:', localStorage.getItem('userId'));
-        console.log('UserEmail stored in localStorage:', localStorage.getItem('userEmail'));
-    };
-
-    const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('userEmail');
-        setIsAuthenticated(false);
-        setUsername('');
-        setUserId('');
-        setUserEmail('');
-        console.log('User logged out'); // Debug log
-    };
 
     return (
         <AuthContext.Provider value={{ isAuthenticated, username, userId, userEmail, login, logout, loading }}>
-            {children}
+            {loading ? <div>Loading authentication...</div> : children}
         </AuthContext.Provider>
     );
 };
