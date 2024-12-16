@@ -117,7 +117,7 @@ const MovieDetail = () => {
     }
   
     try {
-      const token = localStorage.getItem("token"); // Get the token from localStorage
+      const token = localStorage.getItem('token');
       const response = await axios.post(
         `${API_BASE_URL}/UserRating`,
         {
@@ -128,7 +128,7 @@ const MovieDetail = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`, // Send the token in the header
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         }
       );
