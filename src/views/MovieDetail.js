@@ -64,7 +64,20 @@ const MovieDetail = () => {
           `${API_BASE_URL}/TitleBasics/similar-movies`,
           { params: { tconst: id } }
         );
-        setSimilarMovies(similarMoviesResponse.data || []);
+    
+        // Normalize data to ensure `similar_tconst` is always available
+        const normalizedMovies = (similarMoviesResponse.data || []).map((movie) => ({
+          similar_tconst: movie.similar_tconst || movie.tconst, // Fallback to `tconst` if needed
+          primarytitle: movie.primarytitle || "Untitled",
+          poster: movie.poster || null,
+          plot: movie.plot || "No Plot Available",
+        }));
+    
+        setSimilarMovies(normalizedMovies);
+    
+        // Log the data for debugging
+        console.log("Similar Movies Data:", normalizedMovies);
+    
         setError((prev) => ({ ...prev, similarMovies: null }));
       } catch (err) {
         console.error("Error fetching similar movies:", err);
@@ -253,48 +266,95 @@ const MovieDetail = () => {
       {ratingSuccess && <p style={{ marginTop: "10px", color: "green" }}>{ratingSuccess}</p>}
 
 
-      <h2>Cast</h2>
+      <h2>
+        <DynamicLink id={id} type="movies" customPath="cast">
+        <span
+          style={{
+          color: "#007bff", // Link color
+          textDecoration: "underline", // Underline to indicate a link
+          cursor: "pointer", // Pointer cursor to indicate clickable
+        }}
+      >
+        Cast
+        </span>
+        </DynamicLink>
+      </h2>
       {error.cast ? (
         <div style={{ color: "red" }}>{error.cast}</div>
       ) : movieCast.length > 0 ? (
-        <Carousel
-          items={movieCast}
-          visibleCount={5}
-          renderItem={(castMember) => (
-            <DynamicLink id={castMember.nconst} type="people">
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "150px", height: "300px" }}>
-                <img
-                  src={castMember.photo || "https://via.placeholder.com/150x200"}
-                  alt={castMember.primaryname || "Unknown Name"}
-                  style={{ width: "150px", height: "200px", objectFit: "cover", borderRadius: "4px" }}
-                />
-                <p style={{ margin: "10px 0 5px", fontWeight: "bold" }}>{castMember.primaryname || "Unknown Name"}</p>
-                <p style={{ fontSize: "14px", color: "#666" }}>{castMember.role || "Unknown Role"}</p>
-              </div>
-            </DynamicLink>
-          )}
-        />
+        <>
+          <Carousel
+            items={movieCast}
+            visibleCount={5}
+            renderItem={(castMember) => (
+              <DynamicLink id={castMember.nconst} type="people">
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "150px", height: "300px" }}>
+                  <img
+                    src={castMember.photo || "https://via.placeholder.com/150x200"}
+                    alt={castMember.primaryname || "Unknown Name"}
+                    style={{ width: "150px", height: "200px", objectFit: "cover", borderRadius: "4px" }}
+                  />
+                  <p style={{ margin: "10px 0 5px", fontWeight: "bold" }}>{castMember.primaryname || "Unknown Name"}</p>
+                  <p style={{ fontSize: "14px", color: "#666" }}>{castMember.role || "Unknown Role"}</p>
+                </div>
+              </DynamicLink>
+            )}
+          />
+        </>
       ) : (
         <div>No cast information found.</div>
       )}
 
-      <h2>Similar Movies</h2>
+      <h2>
+        <DynamicLink id={id} type="movies" customPath="similar">
+          <span
+            style={{
+              color: "#007bff", // Link color
+              textDecoration: "underline", // Underline to indicate a link
+              cursor: "pointer", // Pointer cursor to indicate clickable
+            }}
+          >
+            Similar Movies
+          </span>
+        </DynamicLink>
+      </h2>
       {error.similarMovies ? (
         <div style={{ color: "red" }}>{error.similarMovies}</div>
       ) : similarMovies.length > 0 ? (
         <Carousel
-          items={similarMovies}
+          items={similarMovies.filter((movie) => movie.similar_tconst)} // Filter out invalid items
           visibleCount={5}
           renderItem={(movie) => (
-            <DynamicLink id={movie.similar_tconst || "undefined"} type="movies">
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "181px", height: "350px" }}>
+            <DynamicLink id={movie.similar_tconst} type="movies">
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  width: "181px",
+                  height: "350px",
+                }}
+              >
                 <img
                   src={movie.poster || "https://via.placeholder.com/181x250"}
                   alt={movie.primarytitle || "No Title"}
-                  style={{ width: "181px", height: "250px", objectFit: "cover", borderRadius: "4px" }}
+                  style={{
+                    width: "181px",
+                    height: "250px",
+                    objectFit: "cover",
+                    borderRadius: "4px",
+                  }}
                 />
-                <p style={{ margin: "10px 0 5px", fontWeight: "bold" }}>{movie.primarytitle || "Unknown Title"}</p>
-                <p style={{ fontSize: "14px", color: "#666", textAlign: "center" }}>
+                <p style={{ margin: "10px 0 5px", fontWeight: "bold" }}>
+                  {movie.primarytitle || "Unknown Title"}
+                </p>
+                <p
+                  style={{
+                    fontSize: "14px",
+                    color: "#666",
+                    textAlign: "center",
+                  }}
+                >
                   {movie.plot && movie.plot.length > 150
                     ? movie.plot.substring(0, 150) + "..."
                     : movie.plot || "No Plot Available"}
@@ -306,6 +366,7 @@ const MovieDetail = () => {
       ) : (
         <div>No similar movies found.</div>
       )}
+
     </div>
   );
 };

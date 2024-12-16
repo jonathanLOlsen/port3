@@ -13,6 +13,8 @@ import People from "./views/People";
 import PersonDetail from './views/PersonDetail';
 import Movies from "./views/Movies";
 import UpdateProfile from './views/UpdateProfile';
+import SimilarMoviesList from './views/SimilarMoviesList'
+import CastList from './views/CastList'
 
 // ProtectedRoute function to guard routes
 const ProtectedRoute = ({ children }) => {
@@ -51,6 +53,8 @@ function App() {
                         <Route path="/people/:nConst" element={<PersonDetail />} />
                         <Route path="/movies" element={<Movies />} />
                         <Route path="/movies/:id" element={<MovieDetail />} />
+                        <Route path="/movies/:id/similar" element={<SimilarMoviesList />} />
+                        <Route path="/movies/:id/cast" element={<CastList />} />
                         
                         {/* Protected Routes */}
                         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
