@@ -106,12 +106,12 @@ const MovieDetail = () => {
     fetchSimilarMovies();
     fetchMovieCast();
   }, [id]);
-  
+
   const handleRatingSubmit = async (e) => {
     e.preventDefault();
   
     // Validate the rating
-    if (!userRating || userRating < 1 || userRating > 10) {
+    if (!userRating || userRating <= 1  || userRating >= 10) {
       setRatingSuccess("Rating must be a number between 1 and 10.");
       return;
     }
@@ -236,7 +236,7 @@ const MovieDetail = () => {
           type="number"
           value={userRating}
           onChange={(e) => setUserRating(e.target.value)}
-          placeholder="Enter a rating (1-10)"
+          placeholder="Enter a rating (0-10)"
           min="1"
           max="10"
           style={{
