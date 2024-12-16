@@ -19,9 +19,9 @@ const Bookmarks = () => {
       try {
         const token = localStorage.getItem('token');
 
-        const response = await fetch(`http://localhost:7247/api/UserBookmarks/user/${userId}/bookmarksWithTitles`, {
+        const response = await fetch('http://localhost:7247/api/UserBookmarks/user/${userId}/bookmarksWithTitles', {
             headers: {
-                'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+                'Authorization': 'Bearer ${token}', // Include the token in the Authorization header
                 'Content-Type': 'application/json',
             },
         });

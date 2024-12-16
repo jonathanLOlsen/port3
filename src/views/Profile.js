@@ -15,10 +15,20 @@ const Profile = () => {
   // Fetch data (bookmarks and search history)
   useEffect(() => {
     const fetchData = async () => {
+      console.log('Fetching profile data for userId:', userId);
       try {
         const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('Token not found in localStorage');
+          setError('Authentication token missing');
+          setLoading(false);
+          return;
+        }
+
+        console.log('Token:', token);
 
         // Fetch bookmarks
+        console.log('Fetching bookmarks...');
         const bookmarkResponse = await fetch(
           `http://localhost:7247/api/UserBookmarks/user/${userId}/bookmarksWithTitles`,
           {
@@ -30,14 +40,16 @@ const Profile = () => {
         );
 
         if (!bookmarkResponse.ok) {
-          console.error('Failed to load bookmarks');
+          console.error('Failed to fetch bookmarks:', bookmarkResponse.status, bookmarkResponse.statusText);
           setError('Failed to load bookmarks');
         } else {
           const bookmarkData = await bookmarkResponse.json();
+          console.log('Bookmark data received:', bookmarkData);
           setBookmarks(bookmarkData);
         }
 
         // Fetch search history
+        console.log('Fetching search history...');
         const searchHistoryResponse = await fetch(
           `http://localhost:7247/api/SearchHis/${userId}`,
           {
@@ -49,10 +61,11 @@ const Profile = () => {
         );
 
         if (!searchHistoryResponse.ok) {
-          console.error('Failed to load search history');
+          console.error('Failed to fetch search history:', searchHistoryResponse.status, searchHistoryResponse.statusText);
           setError('Failed to load search history');
         } else {
           const searchHistoryData = await searchHistoryResponse.json();
+          console.log('Search history data received:', searchHistoryData);
           setSearchHistory(searchHistoryData);
         }
 
@@ -66,17 +79,22 @@ const Profile = () => {
 
     if (userId) {
       fetchData();
+    } else {
+      console.warn('userId is null or undefined. Skipping data fetch.');
+      setLoading(false);
     }
   }, [userId]);
 
   // Handle logout
   const handleLogout = () => {
+    console.log('User logging out...');
     logout();
     navigate('/login');
   };
 
   // Handle remove bookmark
   const handleRemoveBookmark = async (userBookmarksId) => {
+    console.log('Attempting to remove bookmark with ID:', userBookmarksId);
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:7247/api/UserBookmarks/${userBookmarksId}`, {
@@ -87,18 +105,25 @@ const Profile = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to remove bookmark');
+        throw new Error(`Failed to remove bookmark: ${response.status} ${response.statusText}`);
       }
 
       // Filter out the removed bookmark
       setBookmarks(bookmarks.filter((bookmark) => bookmark.userBookmarksId !== userBookmarksId));
-      console.log(`Bookmark removed with ID: ${userBookmarksId}`);
+      console.log('Bookmark removed successfully:', userBookmarksId);
     } catch (err) {
       console.error('Error removing bookmark:', err);
     }
   };
 
-  if (loading) return <div className="text-center my-5">Loading...</div>;
+  useEffect(() => {
+    console.log('Bookmarks updated:', bookmarks);
+  }, [bookmarks]);
+
+  if (loading) {
+    console.log('Loading profile data...');
+    return <div className="text-center my-5">Loading...</div>;
+  }
 
   return (
     <div className="container my-5">
