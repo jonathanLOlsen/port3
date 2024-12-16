@@ -38,6 +38,8 @@ const MovieDetail = () => {
     cast: null,
   });
   const [bookmarkMessage, setBookmarkMessage] = useState(null);
+  const [userRating, setUserRating] = useState(""); //for input field
+  const [ratingSuccess, setRatingSuccess] = useState(null);
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -105,6 +107,47 @@ const MovieDetail = () => {
     fetchMovieCast();
   }, [id]);
 
+  const handleRatingSubmit = async (e) => {
+    e.preventDefault();
+  
+    // Validate the rating
+    if (userRating === "" || userRating < 0 || userRating > 10) {
+      setRatingSuccess("Rating must be a number between 0 and 10.");
+      return;
+    }
+  
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        `${API_BASE_URL}/UserRating`,
+        {
+          userId, // Assume userId is available
+          tConst: id, // Movie ID
+          rating: parseFloat(userRating),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Send the token in the header
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+  
+      if (response.status === 200 || response.status === 201) {
+        setRatingSuccess("Your rating has been successfully submitted!");
+        setUserRating(""); // Clear input after successful submission
+      } else {
+        setRatingSuccess("Failed to submit your rating.");
+      }
+    } catch (err) {
+      console.error("Error submitting user rating:", err);
+      setRatingSuccess("An error occurred while submitting your rating.");
+    } finally {
+      setTimeout(() => setRatingSuccess(null), 3000); // Clear the message after 3 seconds
+    }
+  };
+  
+
   const handleBookmark = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -140,6 +183,7 @@ const MovieDetail = () => {
   }
 
   return (
+    
     <div style={{ padding: "20px", position: "relative" }}>
       <button
         onClick={handleBookmark}
@@ -186,6 +230,28 @@ const MovieDetail = () => {
       ) : (
         <div>No movie details found.</div>
       )}
+      <h2>Rate This Movie</h2>
+      <form onSubmit={handleRatingSubmit}>
+        <input
+          type="number"
+          value={userRating}
+          onChange={(e) => setUserRating(e.target.value)}
+          placeholder="Enter a rating (0-10)"
+          min="0"
+          max="10"
+          style={{
+            padding: "10px",
+            fontSize: "16px",
+            marginRight: "10px",
+            width: "200px",
+          }}
+        />
+        <button type="submit" style={{ padding: "10px 20px", fontSize: "16px" }}>
+          Submit Rating
+        </button>
+      </form>
+      {ratingSuccess && <p style={{ marginTop: "10px", color: "green" }}>{ratingSuccess}</p>}
+
 
       <h2>Cast</h2>
       {error.cast ? (

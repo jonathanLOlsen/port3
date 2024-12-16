@@ -33,7 +33,7 @@ const Profile = () => {
           `http://localhost:7247/api/UserBookmarks/user/${userId}/bookmarksWithTitles`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',
             },
           }
