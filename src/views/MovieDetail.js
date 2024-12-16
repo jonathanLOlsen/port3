@@ -150,7 +150,7 @@ const MovieDetail = () => {
 
   const handleBookmark = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
       const response = await axios.post(
         `${API_BASE_URL}/UserBookmarks`,
         {
@@ -161,7 +161,7 @@ const MovieDetail = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         }
       );
