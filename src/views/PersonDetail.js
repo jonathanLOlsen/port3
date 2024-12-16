@@ -79,11 +79,24 @@ const PersonDetail = () => {
                         <p><strong>Birth Year:</strong> {person.birthYear || "Unknown"}</p>
                     </div>
                     <p><strong>Primary Profession:</strong> {person.primaryProfession || "Not available"}</p>
+                    <p>
+                        <strong>Known For Titles:</strong>{" "}
+                        {person.knownForTitles && person.tConst
+                            ? person.knownForTitles.split(",").map((title, index) => (
+                                <React.Fragment key={index}>
+                                    <DynamicLink id={person.tConst.split(",")[index]?.trim()} type="movies">
+                                        {title.trim()}
+                                    </DynamicLink>
+                                    {index < person.knownForTitles.split(",").length - 1 ? ", " : ""}
+                                </React.Fragment>
+                            ))
+                            : "No titles available"}
+                    </p>
                 </div>
+
     
                 {/* Poster Column */}
                 <div className="poster-column">
-                    <p className="known-for-title">Known For Title:</p>
                     <DynamicLink id={person.tConst} type="movies">
                         <img
                             src={person.poster}
@@ -98,10 +111,6 @@ const PersonDetail = () => {
             <button onClick={() => window.history.back()}>Go Back</button>
         </div>
     );
-    
-    
-    
-    
 };
 
 export default PersonDetail;
