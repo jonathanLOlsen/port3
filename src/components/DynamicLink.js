@@ -1,13 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const DynamicLink = ({ id, type = "movies", children, style }) => {
-  const path = `/${type}/${id}`;
-  console.log("Generated path for DynamicLink:", path); // Log the generated path
+const DynamicLink = ({ id, type = "movies", customPath = "", children, style }) => {
+  const path = customPath ? `/${type}/${id}/${customPath}` : `/${type}/${id}`;
+  console.log("Generated path for DynamicLink:", path); // Debug path
 
   return (
     <Link
-      to={path} // Use the generated path
+      to={path}
       style={{ textDecoration: "none", color: "inherit", ...style }}
     >
       {children}
@@ -16,3 +16,4 @@ const DynamicLink = ({ id, type = "movies", children, style }) => {
 };
 
 export default DynamicLink;
+
