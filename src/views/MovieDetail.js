@@ -119,45 +119,47 @@ const MovieDetail = () => {
     <div className="container my-5">
       {bookmarkMessage && <div className="alert alert-success">{bookmarkMessage}</div>}
 
-      <div className="position-relative mb-5">
-        <button
-          className="btn btn-primary position-absolute top-0 end-0"
-          onClick={handleBookmark}
-        >
-          Bookmark
-        </button>
+      <div className="row align-items-start mb-4">
+        {/* Movie Poster */}
+        <div className="col-md-4">
+          <img
+            src={movie.poster || "https://via.placeholder.com/300"}
+            alt={movie.primaryTitle || "Poster"}
+            className="img-fluid rounded"
+          />
+        </div>
 
-        <div className="row">
-          <div className="col-md-4">
-            <img
-              src={movie.poster || "https://via.placeholder.com/300"}
-              alt={movie.primaryTitle || "Poster"}
-              className="img-fluid rounded"
-            />
-          </div>
-          <div className="col-md-8 d-flex flex-column justify-content-between">
-            <div>
-              <h1 className="mb-3">{movie.primaryTitle || "Untitled"}</h1>
-              <p className="text-muted">{movie.plot || "No description available."}</p>
-            </div>
-            <form className="mt-3">
-              <input
-                type="number"
-                className="form-control mb-2"
-                value={userRating}
-                onChange={(e) => setUserRating(e.target.value)}
-                placeholder="Enter rating (0-10)"
-                min="0"
-                max="10"
-              />
-              <button className="btn btn-success" type="submit">
-                Submit Rating
+        {/* Movie Details */}
+        <div className="col-md-8 d-flex flex-column justify-content-between">
+          <div>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h1 className="mb-0">{movie.primaryTitle || "Untitled"}</h1>
+              <button className="btn btn-primary" onClick={handleBookmark}>
+                Bookmark
               </button>
-            </form>
+            </div>
+            <p className="text-muted">{movie.plot || "No description available."}</p>
           </div>
+
+          {/* Rating Form */}
+          <form className="mt-3">
+            <input
+              type="number"
+              className="form-control mb-2"
+              value={userRating}
+              onChange={(e) => setUserRating(e.target.value)}
+              placeholder="Enter rating (0-10)"
+              min="0"
+              max="10"
+            />
+            <button className="btn btn-success" type="submit">
+              Submit Rating
+            </button>
+          </form>
         </div>
       </div>
 
+      {/* Cast Section */}
       <DynamicLink id={id} type="movies" customPath="cast">
         <h2 className="mb-3 text-primary" style={{ cursor: "pointer" }}>
           Cast
@@ -186,6 +188,7 @@ const MovieDetail = () => {
         <div className="alert alert-warning">No cast information found.</div>
       )}
 
+      {/* Similar Movies Section */}
       <DynamicLink id={id} type="movies" customPath="similar">
         <h2 className="mt-5 mb-3 text-primary" style={{ cursor: "pointer" }}>
           Similar Movies
