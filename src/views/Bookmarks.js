@@ -50,10 +50,10 @@ const Bookmarks = () => {
     try {
         const token = localStorage.getItem('token'); // Get the token from localStorage
 
-        const response = await fetch(`http://localhost:7247/api/UserBookmarks/${bookmarkId}`, {
+        const response = await fetch('http://localhost:7247/api/UserBookmarks/${bookmarkId}', {
             method: "DELETE",
             headers: {
-                'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+                'Authorization': 'Bearer ${token}', // Include the token in the Authorization header
                 'Content-Type': 'application/json',
             },
         });
