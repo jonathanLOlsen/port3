@@ -5,7 +5,6 @@ import MainLayout from './layout/MainLayout'; // Import MainLayout
 import Home from './views/Home';
 import About from './views/About';
 import Profile from './views/Profile';
-import Bookmarks from './views/Bookmarks';
 import Login from './views/Login';
 import Register from './views/Register';
 import MovieDetail from "./views/MovieDetail";
@@ -58,7 +57,7 @@ function App() {
                         
                         {/* Protected Routes */}
                         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                        <Route path="/bookmarks" element={<ProtectedRoute><Bookmarks /></ProtectedRoute>} />
+                        {/*<Route path="/bookmarks" element={<ProtectedRoute><Bookmarks /></ProtectedRoute>} />*/}
                         <Route path="/update-profile" element={<ProtectedRoute><UpdateProfile /></ProtectedRoute>} />
                         {/* Catch-all route for 404 Not Found */}
                         <Route

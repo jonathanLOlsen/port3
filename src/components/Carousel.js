@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import MovieCard from "./MovieCard"; // Ensure MovieCard is imported correctly
-import styles from "./Carousel.module.css";
 
 const Carousel = ({ items = [], visibleCount = 5, renderItem }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -24,34 +22,38 @@ const Carousel = ({ items = [], visibleCount = 5, renderItem }) => {
   };
 
   return (
-    <div className={styles.carousel}>
-      <button onClick={handlePrevious} className={styles.button}>
+    <div className="position-relative my-4">
+      <button
+        onClick={handlePrevious}
+        className="btn btn-primary position-absolute top-50 start-0 translate-middle-y px-3 py-2 shadow"
+        style={{ zIndex: 1 }}
+      >
         &#8592;
       </button>
-      <div className={styles.movieContainer}>
-        {visibleItems.map((item, index) =>
-          renderItem ? (
-            <div key={index} className={styles.itemContainer}>
+      <div className="d-flex justify-content-center overflow-hidden">
+        <div className="d-flex justify-content-between gap-4">
+          {visibleItems.map((item, index) => (
+            <div key={index} className="flex-shrink-0" style={{ width: "217px" }}>
               {renderItem(item)}
             </div>
-          ) : (
-            <MovieCard key={index} movie={item} /> // Default behavior
-          )
-        )}
+          ))}
+        </div>
       </div>
-      <button onClick={handleNext} className={styles.button}>
+      <button
+        onClick={handleNext}
+        className="btn btn-primary position-absolute top-50 end-0 translate-middle-y px-3 py-2 shadow"
+        style={{ zIndex: 1 }}
+      >
         &#8594;
       </button>
     </div>
   );
 };
 
-// Add PropTypes for validation
 Carousel.propTypes = {
-  items: PropTypes.array.isRequired, // Ensure 'items' is always an array
-  visibleCount: PropTypes.number, // Number of items to show at a time
-  renderItem: PropTypes.func, // Custom render function for items
+  items: PropTypes.array.isRequired,
+  visibleCount: PropTypes.number,
+  renderItem: PropTypes.func.isRequired,
 };
 
-// Default export
 export default Carousel;

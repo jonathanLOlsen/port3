@@ -1,14 +1,14 @@
 import React from "react";
-import PropTypes from "prop-types"; // To define prop types for validation
-import styles from "./Dropdown.module.css"; // Import CSS module for styling
+import PropTypes from "prop-types";
 
 const Dropdown = ({ options, selectedValue, onChange }) => {
   return (
-    <div className={styles.dropdownContainer}>
+    <div className="d-flex justify-content-center">
       <select
         value={selectedValue}
         onChange={(e) => onChange(e.target.value)}
-        className={styles.dropdown}
+        className="form-select form-select-lg"
+        style={{ width: "100%", maxWidth: "300px", fontSize: "1.1rem" }}
       >
         {options.map((option) => (
           <option key={option} value={option}>
@@ -20,11 +20,10 @@ const Dropdown = ({ options, selectedValue, onChange }) => {
   );
 };
 
-// Prop types for better type checking
 Dropdown.propTypes = {
-  options: PropTypes.arrayOf(PropTypes.string).isRequired, // Array of strings for dropdown options
-  selectedValue: PropTypes.string.isRequired, // Currently selected value
-  onChange: PropTypes.func.isRequired, // Callback for when selection changes
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selectedValue: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default Dropdown;

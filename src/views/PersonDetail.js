@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_BASE_URL, TMDB_API_KEY, TMDB_BASE_URL } from "../config/Config";
 import DynamicLink from "../components/DynamicLink";
-import "./PersonDetail.css"; // Import the CSS file
+import "./PersonDetail.css"; 
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PersonDetail = () => {
     const { nConst } = useParams();
@@ -108,7 +109,12 @@ const PersonDetail = () => {
             </div>
     
             {/* Back Button */}
-            <button onClick={() => window.history.back()}>Go Back</button>
+            <div className="text-center mt-4">
+        <button className="btn btn-outline-secondary" onClick={() => window.history.back()}>
+          Go Back
+        </button>
+      </div>
+      
         </div>
     );
 };

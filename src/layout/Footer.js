@@ -3,59 +3,31 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer
-      className="footer"
-      style={{
-        backgroundColor: "#343a40",
-        color: "white",
-        padding: "20px",
-        marginTop: "20px",
-        textAlign: "center",
-      }}
-    >
-      <div style={{ marginBottom: "10px" }}>
-        <h4>Site Map</h4>
+    <footer className="bg-dark text-white py-4 mt-5">
+      <div className="container text-center">
+        <h4 className="mb-3">Site Map</h4>
         <nav>
-          <ul
-            style={{
-              listStyleType: "none",
-              padding: 0,
-              margin: 0,
-              display: "flex",
-              justifyContent: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            <li style={{ margin: "0 15px" }}>
-              <Link to="/" style={{ color: "white", textDecoration: "none" }}>
+          <ul className="list-unstyled d-flex justify-content-center flex-wrap mb-0">
+            <li className="mx-3">
+              <Link to="/" className="text-white text-decoration-none">
                 Home
               </Link>
             </li>
-            <li style={{ margin: "0 15px" }}>
-              <Link
-                to="/movies"
-                style={{ color: "white", textDecoration: "none" }}
-              >
+            <li className="mx-3">
+              <Link to="/movies" className="text-white text-decoration-none">
                 Movies
               </Link>
             </li>
-            <li style={{ margin: "0 15px" }}>
-              <Link
-                to="/people"
-                style={{ color: "white", textDecoration: "none" }}
-              >
+            <li className="mx-3">
+              <Link to="/people" className="text-white text-decoration-none">
                 People
               </Link>
             </li>
-            <li style={{ margin: "0 15px" }}>
-              <Link
-                to="/about"
-                style={{ color: "white", textDecoration: "none" }}
-              >
+            <li className="mx-3">
+              <Link to="/about" className="text-white text-decoration-none">
                 About
               </Link>
             </li>
-            {/* Add more links as needed */}
           </ul>
         </nav>
       </div>

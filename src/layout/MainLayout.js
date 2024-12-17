@@ -1,18 +1,17 @@
-import React from 'react';
-import Header from './Header';
-import Footer from './Footer';
-import Breadcrumbs from './Breadcrumbs';
-import ScrollTop from './ScrollTop'
-import './MainLayout.css'; // Optional if you want to style the layout
+import React from "react";
+import Header from "./Header";
+import Footer from "./Footer";
+import Breadcrumbs from "./Breadcrumbs";
+import ScrollTop from "./ScrollTop";
 
 const MainLayout = ({ children }) => {
   return (
-    <div className="main-layout">
-      <ScrollTop/>
+    <div className="d-flex flex-column min-vh-100">
+      <ScrollTop />
       <Header />
       <Breadcrumbs />
-      <main className="main-content">
-        {children}
+      <main className="flex-grow-1 py-4 bg-light">
+        <div className="container">{children}</div>
       </main>
       <Footer />
     </div>
