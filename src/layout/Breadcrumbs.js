@@ -1,6 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-
 import React from "react";
 import { useLocation, Link } from "react-router-dom";
 
@@ -15,9 +12,9 @@ const Breadcrumbs = () => {
       <ol
         className="breadcrumb p-2 m-0 d-flex align-items-center"
         style={{
-          backgroundColor: "#343a40", // Dark gray background
-          color: "white", // White text
-          borderRadius: 0, // Remove border rounding
+          backgroundColor: "#343a40", 
+          color: "white", 
+          borderRadius: 0, 
         }}
       >
         {/* Home breadcrumb */}

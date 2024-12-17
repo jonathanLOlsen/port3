@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { API_BASE_URL } from "../config/Config";
-import "./People.css"; // Reuse styling for grid
 import DynamicLink from "../components/DynamicLink";
 
 const SimilarMoviesList = () => {
@@ -21,10 +20,8 @@ const SimilarMoviesList = () => {
                     { params: { tconst: id } }
                 );
 
-                // Log the response for debugging
                 console.log("Fetched similar movies:", response.data);
-
-                setSimilarMovies(response.data || []); // Ensure array fallback
+                setSimilarMovies(response.data || []);
             } catch (err) {
                 console.error("Failed to load similar movies:", err);
                 setError("Failed to load similar movies.");
@@ -37,55 +34,39 @@ const SimilarMoviesList = () => {
     }, [id]);
 
     return (
-        <div className="people-container">
-            <h1>Similar Movies</h1>
-            {isLoading && <p>Loading...</p>}
-            {error && <p className="error-text">{error}</p>}
-            <div className="people-grid">
+        <div className="container my-5">
+            <h1 className="mb-4 text-center">Similar Movies</h1>
+            {isLoading && <p className="text-center">Loading...</p>}
+            {error && <p className="alert alert-danger text-center">{error}</p>}
+
+            <div className="row gy-4 justify-content-center">
                 {similarMovies.length > 0 ? (
                     similarMovies
-                        .filter((movie) => movie && movie.similar_tconst) // Filter invalid data
+                        .filter((movie) => movie && movie.similar_tconst)
                         .map((movie) => (
-                            <DynamicLink key={movie.similar_tconst} id={movie.similar_tconst} type="movies">
-                            <div
-                                key={movie.similar_tconst}
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                    width: "150px",
-                                    margin: "10px",
-                                }}
-                            >
-                                <img
-                                    src={movie.poster || "https://via.placeholder.com/150x200"}
-                                    alt={movie.primarytitle || "No Title"}
-                                    style={{
-                                        width: "150px",
-                                        height: "200px",
-                                        objectFit: "cover",
-                                        borderRadius: "4px",
-                                    }}
-                                />
-                                <h3 style={{ fontSize: "16px", margin: "10px 0" }}>
-                                    {movie.primarytitle || "Untitled"}
-                                </h3>
-                                <p
-                                    style={{
-                                        fontSize: "14px",
-                                        color: "#666",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    {movie.plot && movie.plot.length > 100
-                                        ? movie.plot.substring(0, 100) + "..."
-                                        : movie.plot || "No Plot Available"}
-                                </p>
+                            <div key={movie.similar_tconst} className="col-6 col-md-4 col-lg-3">
+                                <DynamicLink id={movie.similar_tconst} type="movies">
+                                    <div className="card h-100 text-center shadow">
+                                        <img
+                                            src={movie.poster || "https://via.placeholder.com/150x200"}
+                                            alt={movie.primarytitle || "No Title"}
+                                            className="card-img-top"
+                                            style={{ objectFit: "cover", height: "200px" }}
+                                        />
+                                        <div className="card-body">
+                                            <h5 className="card-title text-truncate">{movie.primarytitle || "Untitled"}</h5>
+                                            <p className="card-text small text-muted">
+                                                {movie.plot && movie.plot.length > 100
+                                                    ? movie.plot.substring(0, 100) + "..."
+                                                    : movie.plot || "No Plot Available"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </DynamicLink>
                             </div>
-                        </DynamicLink>
                         ))
                 ) : (
-                    !isLoading && <p>No similar movies found.</p>
+                    !isLoading && <p className="text-center">No similar movies found.</p>
                 )}
             </div>
         </div>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
 import DynamicLink from '../components/DynamicLink';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Profile = () => {
   const { username, userId, logout } = useAuth();

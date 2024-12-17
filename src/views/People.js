@@ -3,7 +3,6 @@ import axios from "axios";
 import { API_BASE_URL, TMDB_API_KEY, TMDB_BASE_URL } from "../config/Config";
 import PeopleCard from "../components/PeopleCard";
 import { Link } from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const fetchProfileImage = async (name) => {
   try {

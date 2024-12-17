@@ -1,5 +1,5 @@
 import React from "react";
-import DynamicLink from "./DynamicLink"; // Import DynamicLink
+import DynamicLink from "./DynamicLink";
 
 const MovieCard = ({ movie }) => {
   return (

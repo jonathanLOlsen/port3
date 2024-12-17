@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../config/Config";
 import DynamicLink from "../components/DynamicLink";
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Movies = () => {
   const [moviesByGenre, setMoviesByGenre] = useState({});

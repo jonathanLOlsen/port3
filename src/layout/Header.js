@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../AuthContext";
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Header = () => {
   const { isAuthenticated, username, loading } = useAuth();

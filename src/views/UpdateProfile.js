@@ -39,26 +39,73 @@ const UpdateProfile = () => {
   };
 
   return (
-    <div>
-      <h2>Update Profile</h2>
-      <form onSubmit={handleUpdate}>
-        <div>
-          <label>Username</label>
-          <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} required />
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <div className="card shadow">
+            <div className="card-header bg-primary text-white text-center">
+              <h3>Update Profile</h3>
+            </div>
+            <div className="card-body">
+              <form onSubmit={handleUpdate}>
+                {/* Username Field */}
+                <div className="mb-3">
+                  <label className="form-label">Username</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={newUsername}
+                    onChange={(e) => setNewUsername(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* Email Field */}
+                <div className="mb-3">
+                  <label className="form-label">Email</label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* Password Field */}
+                <div className="mb-3">
+                  <label className="form-label">Password</label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* Error and Success Messages */}
+                {error && <div className="alert alert-danger">{error}</div>}
+                {success && <div className="alert alert-success">{success}</div>}
+
+                {/* Buttons */}
+                <div className="d-flex justify-content-between">
+                  <button type="submit" className="btn btn-success">
+                    Update
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => navigate('/profile')}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-        <div>
-          <label>Email</label>
-          <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} required />
-        </div>
-        <div>
-          <label>Password</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        {success && <p style={{ color: 'green' }}>{success}</p>}
-        <button type="submit">Update</button>
-        <button type="button" onClick={() => navigate('/profile')}>Cancel</button>
-      </form>
+      </div>
     </div>
   );
 };
